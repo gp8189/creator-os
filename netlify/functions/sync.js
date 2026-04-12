@@ -1,3 +1,5 @@
+const { getStore } = require("@netlify/blobs");
+
 exports.handler = async function(event, context) {
   const cors = {
     "Access-Control-Allow-Origin": "*",
@@ -10,8 +12,12 @@ exports.handler = async function(event, context) {
   }
 
   try {
-    const { blobs } = context;
-    const store = blobs.getStore("creator-os");
+    const store = getStore({
+      name: "creator-os",
+      siteID: context.clientContext?.custom?.netlify?.site_id || process.env.SITE_ID,
+      token: process.env.NETLIFY_BLOBS_TOKEN || context.clientContext?.identity?.token
+    });
+
     const params = event.queryStringParameters || {};
     const key = params.key;
     const list = params.list;
@@ -24,31 +30,26 @@ exports.handler = async function(event, context) {
       }
       if (key) {
         const value = await store.get(key);
-        if (value === null) {
-          return { statusCode: 200, headers: cors, body: JSON.stringify({ value: null }) };
-        }
         return { statusCode: 200, headers: cors, body: JSON.stringify({ key, value }) };
       }
     }
 
     if (event.httpMethod === "POST") {
       const body = JSON.parse(event.body);
-      const { key, value } = body;
-      if (!key) return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "no key" }) };
-      await store.set(key, value);
-      return { statusCode: 200, headers: cors, body: JSON.stringify({ ok: true, key }) };
+      if (!body.key) return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "no key" }) };
+      await store.set(body.key, body.value);
+      return { statusCode: 200, headers: cors, body: JSON.stringify({ ok: true }) };
     }
 
     if (event.httpMethod === "DELETE") {
       if (!key) return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "no key" }) };
       await store.delete(key);
-      return { statusCode: 200, headers: cors, body: JSON.stringify({ ok: true, key }) };
+      return { statusCode: 200, headers: cors, body: JSON.stringify({ ok: true }) };
     }
 
     return { statusCode: 405, headers: cors, body: JSON.stringify({ error: "method not allowed" }) };
 
   } catch (e) {
-    console.error("Sync error:", e);
     return { statusCode: 500, headers: cors, body: JSON.stringify({ error: String(e) }) };
   }
 };
