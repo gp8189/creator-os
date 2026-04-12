@@ -1,2 +1,7 @@
 [functions]
   directory = "netlify/functions"
+
+[[redirects]]
+  from = "/sync"
+  to = "/.netlify/functions/sync"
+  status = 200
