@@ -35,6 +35,11 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}button{cursor:poin
 .acc-option:hover{background:var(--sur)}
 .acc-option.active{color:var(--a1)}
 .acc-add{color:var(--a3);font-weight:600}
+.acc-option-wrap{display:flex;align-items:center;gap:0}
+.acc-option-wrap .acc-option{flex:1;min-width:0}
+.acc-del{background:none;border:none;color:var(--mu);font-size:11px;padding:6px 10px;cursor:pointer;opacity:0;transition:all .15s;flex-shrink:0}
+.acc-option-wrap:hover .acc-del{opacity:1}
+.acc-del:hover{color:var(--dn)}
 
 .snav{padding:8px 0;flex:1}
 .ssec{padding:0 9px 5px}
@@ -244,22 +249,58 @@ function save(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch(
 // ─── ACCOUNTS ────────────────────────────────────────────────────────────────
 const ACCOUNT_DEFAULTS = [
   {
-    id:'seat1a', name:'My Account', handle:'@myhandle', emoji:'📱',
-    niche:'',
-    voice:'',
-    audience:'',
-    mission:'',
+    id:'seat1a', name:'The Crew Lounge', handle:'@seat1a', emoji:'✈️',
+    niche:'Faceless flight attendant storytelling — blurs fiction and reality',
+    voice:'Witty, warm, mysterious, cinematic. Never desperate. Always in control.',
+    audience:'Women 22-38, travel lovers, aspiring FAs, drama fans',
+    mission:'To entertain, educate, and inspire through cinematic faceless storytelling.',
     colors:['#e8836a','#7ab88a','#f0b87a','#a8d4b0','#c4614a','#0f1210'],
-    hashtags:'',
-    posting:'',
+    hashtags:'#flightattendant #cabincrew #storytime #facelesscreator #fyp',
+    posting:'TikTok: 5-7x/week · Reels: 3-4x/week · Shorts: 2x/week',
     pillars:[
-      {name:'Education',desc:'Tips, tutorials, value',color:'#7ab88a',emoji:'💡'},
-      {name:'Entertainment',desc:'Fun, trending, viral content',color:'#e8836a',emoji:'🎭'},
-      {name:'Behind the Scenes',desc:'Process, day in the life',color:'#a8d4b0',emoji:'🎬'},
-      {name:'Monetization',desc:'Products, CTAs, offers',color:'#f0b87a',emoji:'💰'},
+      {name:'Storytelling',desc:'Cinematic fiction, drama, cliffhangers',color:'#e8836a',emoji:'🎭'},
+      {name:'Education',desc:'Tips, facts, insider knowledge',color:'#7ab88a',emoji:'💡'},
+      {name:'Behind Scenes',desc:'Day in the life, process',color:'#a8d4b0',emoji:'🎬'},
+      {name:'Monetization',desc:'CTAs, product plugs',color:'#f0b87a',emoji:'💰'},
       {name:'Community',desc:'Q&A, engagement, trends',color:'#c4614a',emoji:'🤝'},
     ],
-    agentSys:'You are an AI Content Agent helping a social media creator grow their brand. Help create content, write captions, hooks, and grow this brand. Match the creator\'s voice and niche.',
+    agentSys:'You are the AI Content Agent for "The Crew Lounge" (@seat1a) — a faceless TikTok/Instagram brand. Niche: Faceless flight attendant storytelling. Voice: Witty, warm, mysterious, cinematic. Never desperate. Always in control. Write viral hooks, scripts, captions, content plans. Always match The Crew Lounge voice.',
+  },
+  {
+    id:'continuum', name:'Continuum Valley', handle:'@continuumvalley', emoji:'🌿',
+    niche:'Community movement — produce market, franchise blueprint, feeding families in need',
+    voice:'Warm, purposeful, inspiring, community-driven. Building something bigger than yourself.',
+    audience:'Community builders, social impact followers, local families, entrepreneurs',
+    mission:'To build a self-sustaining community ecosystem — a produce market, resource hub, and franchise blueprint that feeds and uplifts those in need.',
+    colors:['#7ab88a','#a8d4b0','#f0b87a','#e8836a','#2a3830','#0f1210'],
+    hashtags:'#communitybuilding #socialimpact #continuumvalley #foodjustice #communityfirst',
+    posting:'TikTok: 3-4x/week · Instagram: 4-5x/week · YouTube: 1x/week',
+    pillars:[
+      {name:'Community Impact',desc:'Stories of change, feeding families',color:'#7ab88a',emoji:'🌱'},
+      {name:'Behind the Build',desc:'Construction, planning, progress',color:'#a8d4b0',emoji:'🏗️'},
+      {name:'Education',desc:'How to start a community movement',color:'#f0b87a',emoji:'📚'},
+      {name:'Fundraising',desc:'Donation drives, goals, milestones',color:'#e8836a',emoji:'💚'},
+      {name:'Vision Casting',desc:'The franchise blueprint, future plans',color:'#c4614a',emoji:'🔮'},
+    ],
+    agentSys:'You are the AI Content Agent for "Continuum Valley" — a community movement brand. Building a produce market and resource hub that will become a franchise blueprint to feed families in need. Voice: Warm, purposeful, inspiring. Write content that moves people to action and builds community.',
+  },
+  {
+    id:'everythingseat', name:'The Everything Seat', handle:'@theeverythingseat', emoji:'🎙️',
+    niche:'Self-help & growth podcast — covering everything from mindset to business to healing',
+    voice:'Real, raw, empowering, conversational. No filter, no fluff. Everything on the table.',
+    audience:'Women 25-45 seeking growth, entrepreneurs, people navigating life transitions',
+    mission:'To create a safe, powerful space where every topic gets a seat at the table — mental health, business, relationships, spirituality, and everything in between.',
+    colors:['#c084fc','#f472b6','#7ab88a','#f0b87a','#60a5fa','#0f1210'],
+    hashtags:'#podcast #selfhelp #personalgrowth #mindset #theeverythingseat #womenempowerment',
+    posting:'Podcast: 1-2x/week · TikTok clips: 3-5x/week · Instagram: 4x/week',
+    pillars:[
+      {name:'Mindset & Growth',desc:'Mental health, mindset shifts, healing',color:'#c084fc',emoji:'🧠'},
+      {name:'Business & Money',desc:'Entrepreneurship, income, strategy',color:'#7ab88a',emoji:'💼'},
+      {name:'Relationships',desc:'Love, friendship, boundaries, family',color:'#f472b6',emoji:'❤️'},
+      {name:'Spirituality',desc:'Faith, purpose, energy, manifestation',color:'#f0b87a',emoji:'✨'},
+      {name:'Real Talk',desc:'Raw stories, interviews, hot topics',color:'#60a5fa',emoji:'🎤'},
+    ],
+    agentSys:'You are the AI Content Agent for "The Everything Seat" — a self-help and growth podcast brand. Covers mindset, business, relationships, spirituality, and healing. Voice: Real, raw, empowering, conversational. No filter, no fluff. Write podcast episode ideas, show notes, social clips, and growth content.',
   },
 ];
 
@@ -275,6 +316,9 @@ function switchAccount(idx){
   document.getElementById('acc-emoji').textContent=acc.emoji;
   document.getElementById('acc-name').textContent=acc.name;
   document.getElementById('acc-dropdown').classList.remove('open');
+  const logoSub2=document.getElementById('logo-sub');
+  if(logoSub2)logoSub2.textContent=acc.name+' · Creator OS';
+  rebuildDropdown();
   renderNav();renderPage();
 }
 function toggleAccDropdown(){document.getElementById('acc-dropdown').classList.toggle('open');}
@@ -291,13 +335,60 @@ function addNewAccount(){
   };
   ACCOUNTS.push(newAcc);save('cos_accounts',ACCOUNTS);
   switchAccount(ACCOUNTS.length-1);
-  // update dropdown
+}
+
+function deleteAccount(idx){
+  if(ACCOUNTS.length<=1){alert('You must have at least one account.');return;}
+  const acc=ACCOUNTS[idx];
+  if(!confirm(`Delete "${acc.name}"? All data for this account will be removed.`))return;
+  // Remove account-specific localStorage keys
+  const prefix='cos_'+acc.id+'_';
+  const keysToRemove=[];
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k&&k.startsWith(prefix))keysToRemove.push(k);
+  }
+  keysToRemove.forEach(k=>localStorage.removeItem(k));
+  // Remove from accounts array
+  ACCOUNTS.splice(idx,1);
+  save('cos_accounts',ACCOUNTS);
+  // If we deleted the active or a preceding account, adjust index
+  if(ACTIVE_ACC>=ACCOUNTS.length)ACTIVE_ACC=ACCOUNTS.length-1;
+  else if(idx<ACTIVE_ACC)ACTIVE_ACC--;
+  else if(idx===ACTIVE_ACC)ACTIVE_ACC=Math.min(ACTIVE_ACC,ACCOUNTS.length-1);
+  save('cos_active_acc',ACTIVE_ACC);
+  // Refresh UI
+  const a=getAcc();
+  document.getElementById('acc-emoji').textContent=a.emoji;
+  document.getElementById('acc-name').textContent=a.name;
+  const logoSub2=document.getElementById('logo-sub');
+  if(logoSub2)logoSub2.textContent=a.name+' · Creator OS';
+  rebuildDropdown();
+  renderNav();renderPage();
+}
+
+function rebuildDropdown(){
   const dd=document.getElementById('acc-dropdown');
-  const addBtn=dd.querySelector('.acc-add').parentElement;
-  const btn=document.createElement('button');
-  btn.className='acc-option';btn.textContent=`${emoji} ${name}`;
-  const idx=ACCOUNTS.length-1;btn.onclick=()=>switchAccount(idx);
-  dd.insertBefore(btn,addBtn);
+  dd.innerHTML='';
+  ACCOUNTS.forEach((a,i)=>{
+    const wrap=document.createElement('div');
+    wrap.className='acc-option-wrap';
+    const btn=document.createElement('button');
+    btn.className='acc-option'+(i===ACTIVE_ACC?' active':'');
+    btn.textContent=`${a.emoji} ${a.name}`;
+    btn.onclick=()=>switchAccount(i);
+    wrap.appendChild(btn);
+    // Delete button (always show, but prevent deleting last account)
+    const del=document.createElement('button');
+    del.className='acc-del';
+    del.textContent='✕';
+    del.title='Delete account';
+    del.onclick=(e)=>{e.stopPropagation();deleteAccount(i);};
+    wrap.appendChild(del);
+    dd.appendChild(wrap);
+  });
+  const div=document.createElement('div');div.style='height:1px;background:var(--bor);margin:4px 0';dd.appendChild(div);
+  const addBtn=document.createElement('button');addBtn.className='acc-option acc-add';addBtn.textContent='➕ Add New Account';addBtn.onclick=addNewAccount;dd.appendChild(addBtn);
 }
 
 // ─── NAV ─────────────────────────────────────────────────────────────────────
@@ -1277,46 +1368,10 @@ document.getElementById('acc-name').textContent=acc.name;
 const logoSub=document.getElementById('logo-sub');
 if(logoSub)logoSub.textContent=acc.name+' · Creator OS';
 // rebuild dropdown with saved accounts
-const dd=document.getElementById('acc-dropdown');
-dd.innerHTML='';
-ACCOUNTS.forEach((a,i)=>{
-  const btn=document.createElement('button');
-  btn.className='acc-option'+(i===ACTIVE_ACC?' active':'');
-  btn.textContent=`${a.emoji} ${a.name}`;
-  btn.onclick=()=>switchAccount(i);
-  dd.appendChild(btn);
-});
-const div=document.createElement('div');div.style='height:1px;background:var(--bor);margin:4px 0';dd.appendChild(div);
-const addBtn=document.createElement('button');addBtn.className='acc-option acc-add';addBtn.textContent='➕ Add New Account';addBtn.onclick=addNewAccount;dd.appendChild(addBtn);
+rebuildDropdown();
 
 renderNav();
 renderPage();
-
-// ─── FIRST-RUN ONBOARDING ────────────────────────────────────────────────────
-if(!load('cos_onboarded',false)){
-  setTimeout(()=>{
-    const name=prompt('👋 Welcome to Creator OS!\n\nWhat\'s your brand or account name?','My Brand');
-    if(name){
-      ACCOUNTS[0].name=name;
-      const emoji=prompt('Choose an emoji for your account:','📱')||'📱';
-      ACCOUNTS[0].emoji=emoji;
-      const handle=prompt('Your handle? (e.g. @myhandle)','')||'';
-      ACCOUNTS[0].handle=handle;
-      save('cos_accounts',ACCOUNTS);
-      save('cos_onboarded',true);
-      document.getElementById('acc-emoji').textContent=emoji;
-      document.getElementById('acc-name').textContent=name;
-      const logoSub=document.getElementById('logo-sub');
-      if(logoSub)logoSub.textContent=name+' · Creator OS';
-      // rebuild dropdown
-      const dd=document.getElementById('acc-dropdown');dd.innerHTML='';
-      ACCOUNTS.forEach((a,i)=>{const btn=document.createElement('button');btn.className='acc-option'+(i===ACTIVE_ACC?' active':'');btn.textContent=`${a.emoji} ${a.name}`;btn.onclick=()=>switchAccount(i);dd.appendChild(btn);});
-      const dv=document.createElement('div');dv.style='height:1px;background:var(--bor);margin:4px 0';dd.appendChild(dv);
-      const ab=document.createElement('button');ab.className='acc-option acc-add';ab.textContent='➕ Add New Account';ab.onclick=addNewAccount;dd.appendChild(ab);
-      renderPage();
-    }else{save('cos_onboarded',true);}
-  },400);
-}
 
 
 // ─── POMODORO ─────────────────────────────────────────────────────────────────
