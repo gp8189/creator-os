@@ -1,3 +1,6 @@
+[build]
+  functions = "netlify/functions"
+
 [functions]
   directory = "netlify/functions"
 
@@ -5,3 +8,4 @@
   from = "/sync"
   to = "/.netlify/functions/sync"
   status = 200
+  
