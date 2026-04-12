@@ -1143,7 +1143,7 @@ function renderAgent(){
       <div style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.08em">Quick Actions</div>
       <button class="btn btn-ghost btn-sm" onclick="if(confirm('Remove API key?')){saveClaudeKey('');renderPage();}">🔑 Change Key</button>
     </div>
-    <div style="margin-bottom:12px">${DEFAULT_QUICK.map(q=>`<button class="qb" onclick="sendChat(${JSON.stringify(q)})">${esc(q)}</button>`).join('')}</div>
+    <div style="margin-bottom:12px" id="quick-btns">${DEFAULT_QUICK.map(q=>`<button class="qb" data-q="${esc(q)}" onclick="sendChat(this.getAttribute('data-q'))">${esc(q)}</button>`).join('')}</div>
     <div class="chat-wrap">
       <div class="chat-msgs" id="chat-msgs">
         ${chat.map(m=>`<div class="chat-msg ${m.role}">${m.role==='ai'?'<div class="ai-label">✦ Claude AI</div>':''}${esc(m.content)}</div>`).join('')}
