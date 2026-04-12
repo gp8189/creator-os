@@ -1489,7 +1489,7 @@ function imgUploadBtn(storageKey,label){
         <div style="font-size:9px;color:var(--mu)">PDF attached</div>
       </div>
       <div style="display:flex;gap:4px">
-        <button onclick="(function(d){var w=window.open();w.document.write('<iframe src=\\''+d+'\\' style=\\'border:none;width:100%;height:100vh\\'></iframe>');w.document.close();})(load(accKey('${pdfKey}'),''))" style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;background:rgba(122,184,138,.15);color:var(--a3);border:1px solid rgba(122,184,138,.3);cursor:pointer">⬇ View</button>
+        <button onclick="var d=this.getAttribute('data-pdf');var w=window.open('','_blank');w.document.write('<html><body style=margin:0><embed src=\\''+d+'\\' type=\\'application/pdf\\' width=\\'100%\\' height=\\'100%\\' style=\\'position:fixed;top:0;left:0;width:100%;height:100%\\'></body></html>');w.document.close();" data-pdf="${existingPdf}" style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;background:rgba(122,184,138,.15);color:var(--a3);border:1px solid rgba(122,184,138,.3);cursor:pointer">⬇ View</button>
         <button onclick="removePdf('${pdfKey}')" style="padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;background:rgba(224,112,96,.1);color:var(--dn);border:1px solid rgba(224,112,96,.2);cursor:pointer">✕</button>
       </div>
     </div>`:''}
