@@ -15,7 +15,7 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}button{cursor:poin
 .shell{display:flex;min-height:100vh}
 
 /* SIDEBAR */
-.sb{width:225px;min-height:100vh;background:var(--sur);border-right:1px solid var(--bor);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;overflow-y:auto}
+.sb{width:225px;min-height:100vh;background:var(--sur);border-right:1px solid var(--bor);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .logo{padding:16px;border-bottom:1px solid var(--bor)}
 .logo h1{font-family:'Cormorant Garamond',serif;font-size:20px;background:linear-gradient(135deg,var(--a1),var(--a3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
 .logo p{font-size:10px;color:var(--mu);margin-top:2px}
@@ -72,7 +72,7 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}button{cursor:poin
 .cbox-label{font-size:11px;flex:1}
 .cbox-label.done{text-decoration:line-through;color:var(--mu)}
 
-.main{margin-left:225px;flex:1;padding:22px 26px;max-width:1120px}
+.main{margin-left:225px;flex:1;padding:22px 26px;max-width:1120px;-webkit-overflow-scrolling:touch}
 .ph h2{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;margin-bottom:3px}
 .ph p{font-size:12px;color:var(--mu);margin-bottom:18px}
 .glow{background:linear-gradient(135deg,var(--a1),var(--a3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -151,8 +151,13 @@ select.inp{cursor:pointer}
 
 /* TASK TRACKER */
 .task-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(42,56,48,.08)}
-.task-check{width:16px;height:16px;border-radius:4px;border:1px solid var(--bor);cursor:pointer;flex-shrink:0;background:none;appearance:none;-webkit-appearance:none}
+.task-check{width:16px;height:16px;border-radius:4px;border:1px solid var(--bor);cursor:pointer;flex-shrink:0;background:none;appearance:none;-webkit-appearance:none;transition:all .15s}
 .task-check:checked{background:var(--a3);border-color:var(--a3)}
+.task-check:checked::after{content:'✓';display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;line-height:16px;width:16px}
+.checklist-item{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid rgba(42,56,48,.07)}
+.checklist-item:last-child{border-bottom:none}
+.checklist-label{font-size:12px;flex:1;cursor:pointer;padding-top:1px;line-height:1.4}
+.checklist-label.done{text-decoration:line-through;color:var(--mu)}
 .priority-badge{padding:1px 7px;border-radius:99px;font-size:9px;font-weight:700}
 
 /* FINANCE HUB */
@@ -626,13 +631,14 @@ function renderPlanner(){
       <div class="tabs">${stats.map(s=>`<button class="tab${filter===s?' active':''}" onclick="setFilter('${s}')">${s}</button>`).join('')}</div>
     </div>
     <div class="card" style="padding:0"><div class="tw"><table>
-      <thead><tr><th>Title</th><th>Pillar</th><th>Platform</th><th>Status</th><th>Date</th><th>Views</th><th>Likes</th><th>Monetize</th><th></th></tr></thead>
+      <thead><tr><th>✓</th><th>Title</th><th>Pillar</th><th>Platform</th><th>Status</th><th>Date</th><th>Views</th><th>Likes</th><th>Monetize</th><th></th></tr></thead>
       <tbody>
         ${list.length===0?`<tr><td colspan="9" style="text-align:center;color:var(--mu);padding:24px">No posts yet!</td></tr>`:''}
         ${list.map(p=>{
           const pl=acc.pillars[p.pillar];
           return`<tr>
-            <td><div style="font-weight:600;font-size:11px">${esc(p.title)||'Untitled'}</div>${p.hook?`<div style="font-size:9px;color:var(--mu);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.hook)}</div>`:''}</td>
+            <td><input type="checkbox" class="task-check" ${p.done?'checked':''} onchange="togglePostDone('${p.id}',this.checked)"/></td>
+            <td><div style="font-weight:600;font-size:11px;${p.done?'text-decoration:line-through;opacity:.6':''}">${esc(p.title)||'Untitled'}</div>${p.hook?`<div style="font-size:9px;color:var(--mu);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.hook)}</div>`:''}</td>
             <td>${pl?`<span class="tag" style="background:${pl.color}20;color:${pl.color}">${pl.emoji} ${esc(pl.name)}</span>`:''}</td>
             <td style="font-size:10px">${esc(p.platform)}</td>
             <td><span class="badge" style="background:${sc(p.status)}20;color:${sc(p.status)}">${p.status}</span></td>
@@ -695,6 +701,7 @@ function savePost(id){
   closeModal();renderPage();
 }
 function deletePost(id){const posts=loadA('posts',DEF_POSTS);saveA('posts',posts.filter(x=>x.id!=id));renderPage();}
+function togglePostDone(id,done){const posts=loadA('posts',DEF_POSTS);saveA('posts',posts.map(p=>p.id==id?{...p,done}:p));renderPage();}
 
 // ─── 30-DAY CONTENT PLAN ─────────────────────────────────────────────────────
 function renderThirtyDay(){
@@ -706,8 +713,11 @@ function renderThirtyDay(){
     <div class="ph"><h2>30-Day Content Plan</h2><p>Plan your entire month of content in one place — auto-saved.</p></div>
     <div class="day-grid">
       ${plan.map((d,i)=>`
-        <div class="day-card" style="border-color:${d.status==='Published'?'var(--a3)33':d.status?'var(--a1)22':'var(--bor)'}">
-          <div class="day-num">Day ${d.day}</div>
+        <div class="day-card" style="border-color:${d.done?'var(--a3)44':d.status==='Published'?'var(--a3)33':d.status?'var(--a1)22':'var(--bor)'}">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
+            <input type="checkbox" class="task-check" ${d.done?'checked':''} onchange="updateDay(${i},'done',this.checked)"/>
+            <div class="day-num" style="margin-bottom:0;${d.done?'text-decoration:line-through;opacity:.5':''}">Day ${d.day}</div>
+          </div>
           <div class="fg" style="margin-bottom:6px"><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Title</label><input class="inp" value="${esc(d.title)}" style="font-size:11px;padding:4px 7px" onchange="updateDay(${i},'title',this.value)"/></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px">
             <div><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Pillar</label><select class="inp" style="font-size:10px;padding:3px 6px" onchange="updateDay(${i},'pillar',this.value)"><option value="">—</option>${acc.pillars.map(p=>`<option${d.pillar===p.name?' selected':''}>${p.emoji} ${p.name}</option>`).join('')}</select></div>
@@ -966,6 +976,10 @@ function renderProducts(){
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:9px">
             ${[['Price',fd(p.price)],['Sales',fmt(p.sales)],['Revenue',fd(p.revenue)]].map(([l,v])=>`<div style="text-align:center;background:var(--sur);border-radius:5px;padding:5px"><div style="font-size:13px;font-weight:700;color:var(--a3);font-family:'Cormorant Garamond',serif">${v}</div><div style="font-size:8px;color:var(--mu)">${l}</div></div>`).join('')}
           </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <input type="checkbox" class="task-check" ${p.done?'checked':''} onchange="toggleProdDone('${p.id}',this.checked)" title="Mark complete"/>
+            <span style="font-size:10px;color:var(--mu)">${p.done?'Completed':'Mark complete'}</span>
+          </div>
           <div style="display:flex;gap:5px">
             <button class="btn btn-ghost btn-sm" onclick="openProdModal('${p.id}')">Edit</button>
             <button class="btn btn-danger btn-sm" onclick="deleteProd('${p.id}')">Delete</button>
@@ -1008,10 +1022,11 @@ function renderDeals(){
     <div class="ph"><h2>Brand Deals</h2><p>Sponsorships and partnerships — auto-saved.</p></div>
     <button class="btn btn-primary" style="margin-bottom:14px" onclick="openDealModal()">+ Add Deal</button>
     <div class="card" style="padding:0"><div class="tw"><table>
-      <thead><tr><th>Brand</th><th>Type</th><th>Value</th><th>Status</th><th>Deadline</th><th>Deliverables</th><th></th></tr></thead>
+      <thead><tr><th>✓</th><th>Brand</th><th>Type</th><th>Value</th><th>Status</th><th>Deadline</th><th>Deliverables</th><th></th></tr></thead>
       <tbody>
         ${deals.map(d=>`<tr>
-          <td style="font-weight:600;font-size:11px">${esc(d.brand)}</td>
+          <td><input type="checkbox" class="task-check" ${d.done?'checked':''} onchange="toggleDealDone('${d.id}',this.checked)"/></td>
+          <td style="font-weight:600;font-size:11px;${d.done?'text-decoration:line-through;opacity:.6':''}">${esc(d.brand)}</td>
           <td style="font-size:10px">${esc(d.type)}</td>
           <td style="font-weight:700;color:var(--a3);font-size:11px">${fd(d.value)}</td>
           <td><span class="badge" style="background:${d.status==='Active'?'var(--a3)20':'var(--a4)20'};color:${d.status==='Active'?'var(--a3)':'var(--a4)'}">${d.status}</span></td>
@@ -1083,10 +1098,11 @@ function renderCollab(){
     <div class="ph"><h2>Collab Tracker</h2><p>Track your collaboration outreach — auto-saved.</p></div>
     <button class="btn btn-primary" style="margin-bottom:14px" onclick="openCollabModal()">+ Add Collab</button>
     <div class="card" style="padding:0"><div class="tw"><table>
-      <thead><tr><th>Username</th><th>Platform 1</th><th>Platform 2</th><th>Msg 1</th><th>Msg 2</th><th>Msg 3</th><th>Product</th><th>Followers</th><th>Category</th><th></th></tr></thead>
+      <thead><tr><th>Done</th><th>Username</th><th>Platform 1</th><th>Platform 2</th><th>Msg 1</th><th>Msg 2</th><th>Msg 3</th><th>Product</th><th>Followers</th><th>Category</th><th></th></tr></thead>
       <tbody>
         ${collabs.filter(c=>c.username).map(c=>`<tr>
-          <td style="font-weight:600;font-size:11px">${esc(c.username)}</td>
+          <td><input type="checkbox" class="task-check" ${c.done?'checked':''} onchange="updateCollab('${c.id}','done',this.checked)"/></td>
+          <td style="font-weight:600;font-size:11px;${c.done?'text-decoration:line-through;opacity:.6':''}">${esc(c.username)}</td>
           <td style="font-size:10px">${esc(c.platform1)}</td>
           <td style="font-size:10px">${esc(c.platform2)}</td>
           <td style="text-align:center"><input type="checkbox" class="task-check" ${c.sent1?'checked':''} onchange="updateCollab('${c.id}','sent1',this.checked)"/></td>
@@ -1148,7 +1164,7 @@ function renderAgent(){
 }
 function initAgent(){const msgs=document.getElementById('chat-msgs');if(msgs)msgs.scrollTop=msgs.scrollHeight;}
 const GEMINI_KEY='AIzaSyA2h60F2LvoObJ4o4DvXs5KvtQCKFXbG9w';
-const GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+GEMINI_KEY;
+const GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+GEMINI_KEY;
 const GEMINI_SYS={
   seat1a:'You are the AI Content Agent for "The Crew Lounge" (@seat1a) — a faceless TikTok brand run by Marisol. Niche: Faceless flight attendant storytelling that blurs fiction and reality. Tagline: "36,000 feet of unfiltered truth". Voice: Witty, warm, mysterious, cinematic. Never desperate. Always in control. Audience: Women 22-38, travel lovers, aspiring FAs, drama fans. Write viral hooks, scripts, captions, content plans, pitch emails. Always match The Crew Lounge voice. Format scripts with [SOUND] cues and VO: labels.',
   continuum:'You are the AI Content Agent for "Continuum Valley" — a community movement brand run by Marisol. Building a produce market and resource hub that will become a franchise blueprint to feed families in need. Voice: Warm, purposeful, inspiring, community-driven. Write content that moves people to action, builds community, and attracts donors and supporters.',
@@ -1176,7 +1192,8 @@ async function sendChat(text){
     if(loading)loading.outerHTML=`<div class="chat-msg ai"><div class="ai-label">✦ Gemini AI</div>${esc(reply)}</div>`;
   }catch(e){
     const loading=document.getElementById('loading-msg');
-    if(loading)loading.outerHTML=`<div class="chat-msg ai"><div class="ai-label">✦ Gemini AI</div>Error: ${esc(e.message||'Something went wrong')}. Please try again.</div>`;
+    if(loading)loading.outerHTML=`<div class="chat-msg ai"><div class="ai-label">✦ Gemini AI</div>⚠️ Error: ${esc(e.message||'Network error')}. Make sure you are online and try again.</div>`;
+    console.error('Gemini error:',e);
   }
   if(btn)btn.disabled=false;
   const msgsEl=document.getElementById('chat-msgs');if(msgsEl)msgsEl.scrollTop=msgsEl.scrollHeight;
@@ -1217,7 +1234,13 @@ function renderNotes(){
             <input style="flex:1;background:none;border:none;outline:none;font-size:18px;font-weight:700;font-family:'Cormorant Garamond',serif;color:${act.color}" value="${esc(act.title)}" id="note-title-inp" onblur="updateNote('title',this.value)"/>
             <input type="color" value="${act.color}" onchange="updateNote('color',this.value)" style="width:26px;height:26px;border:none;border-radius:5px;cursor:pointer;padding:2px;background:none"/>
           </div>
-          <textarea class="inp" id="note-content-inp" style="flex:1;min-height:300px;border-color:${act.color}38;resize:vertical" onblur="updateNote('content',this.value)" placeholder="Brain dump everything here...">${esc(act.content)}</textarea>
+          <div style="display:flex;gap:5px;margin-bottom:7px;flex-wrap:wrap">
+            <button class="btn btn-ghost btn-sm" onclick="noteInsertChecklist()" title="Add checklist item">☑️ Add Checklist</button>
+            <button class="btn btn-ghost btn-sm" onclick="noteCheckAll()" title="Check all items">✅ Check All</button>
+            <button class="btn btn-ghost btn-sm" onclick="noteUncheckAll()" title="Uncheck all">🔲 Uncheck All</button>
+          </div>
+          <textarea class="inp" id="note-content-inp" style="flex:1;min-height:300px;border-color:${act.color}38;resize:vertical" onblur="updateNote('content',this.value)" placeholder="Brain dump everything here...\n\nTip: Tap ☑️ Add Checklist to create checkboxes!\n\n☐ Item 1\n☐ Item 2">${esc(act.content)}</textarea>
+          <div id="note-checklist-preview" style="margin-top:8px"></div>
           ${imgUploadBtn('note_'+act.id,'Note Image')}
           <div style="display:flex;gap:7px;margin-top:10px">
             <button class="btn btn-primary btn-sm" onclick="updateNote('content',document.getElementById('note-content-inp').value);updateNote('title',document.getElementById('note-title-inp').value)">💾 Save</button>
@@ -1239,6 +1262,11 @@ function updateNote(field,val){const notes=loadA('notes',DEF_NOTES);saveA('notes
 function pinNote(id){const notes=loadA('notes',DEF_NOTES);saveA('notes',notes.map(n=>n.id==id?{...n,pinned:!n.pinned}:n));renderPage();}
 function deleteNote(id){const notes=loadA('notes',DEF_NOTES);saveA('notes',notes.filter(n=>n.id!=id));if(STATE.activeNote==id)STATE.activeNote=null;renderPage();}
 function filterNotes(q){document.querySelectorAll('.nc').forEach(c=>{c.style.display=c.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';});}
+function noteInsertChecklist(){const ta=document.getElementById('note-content-inp');if(!ta)return;const pos=ta.selectionStart;const val=ta.value;ta.value=val.slice(0,pos)+(pos>0&&val[pos-1]!=='\n'?'\n':'')+'☐ '+val.slice(pos);ta.selectionStart=ta.selectionEnd=pos+(pos>0&&val[pos-1]!=='\n'?1:0)+3;ta.focus();}
+function noteCheckAll(){const ta=document.getElementById('note-content-inp');if(!ta)return;ta.value=ta.value.replace(/☐/g,'☑');updateNote('content',ta.value);}
+function noteUncheckAll(){const ta=document.getElementById('note-content-inp');if(!ta)return;ta.value=ta.value.replace(/☑/g,'☐');updateNote('content',ta.value);}
+function toggleProdDone(id,done){const prods=loadA('prods',DEF_PRODS);saveA('prods',prods.map(p=>p.id==id?{...p,done}:p));renderPage();}
+function toggleDealDone(id,done){const deals=loadA('deals',DEF_DEALS);saveA('deals',deals.map(d=>d.id==id?{...d,done}:d));renderPage();}
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
 const acc=getAcc();
