@@ -44,6 +44,34 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}button{cursor:poin
 .ni.active{background:linear-gradient(135deg,rgba(232,131,106,.13),rgba(122,184,138,.07));color:var(--tx);border:1px solid rgba(232,131,106,.25)}
 .sb-footer{padding:10px;border-top:1px solid var(--bor);font-size:9px;color:var(--mu);text-align:center}
 
+/* POMODORO */
+.pomo{padding:10px 12px;border-bottom:1px solid var(--bor);background:linear-gradient(135deg,rgba(232,131,106,.05),rgba(122,184,138,.03))}
+.pomo-hdr{font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center}
+.pomo-bar{height:3px;background:var(--bor);border-radius:99px;overflow:hidden;margin-bottom:6px}
+.pomo-fill{height:100%;background:linear-gradient(90deg,var(--a1),var(--a3));transition:width 1s linear}
+.pomo-time{font-size:30px;font-weight:700;font-family:'Cormorant Garamond',serif;color:var(--a1);text-align:center;line-height:1}
+.pomo-phase{font-size:9px;color:var(--mu);text-align:center;margin-top:2px;margin-bottom:2px}
+.pomo-rounds-txt{font-size:9px;color:var(--a3);text-align:center;margin-bottom:7px}
+.pomo-btns{display:flex;gap:3px;margin-bottom:6px}
+.pomo-btn{flex:1;padding:5px 3px;border-radius:5px;font-size:10px;font-weight:600;border:none;cursor:pointer;transition:all .15s}
+.pomo-go{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff}
+.pomo-sec{background:var(--bor);color:var(--tx)}
+.pomo-cust{font-size:9px;color:var(--mu);cursor:pointer;text-align:center;padding:2px}
+.pomo-cust:hover{color:var(--tx)}
+.pomo-settings{display:none;margin-top:6px}
+.pomo-settings.open{display:block}
+.pomo-row{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:4px}
+.pomo-lbl{font-size:8px;color:var(--mu);display:block;margin-bottom:1px}
+.pomo-inp{background:var(--bg);border:1px solid var(--bor);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;width:100%;outline:none}
+
+/* CHECKBOXES */
+.cbox{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--bor);cursor:pointer;flex-shrink:0;background:none;appearance:none;-webkit-appearance:none;transition:all .15s;vertical-align:middle}
+.cbox:checked{background:var(--a3);border-color:var(--a3)}
+.cbox-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(42,56,48,.07)}
+.cbox-row:last-child{border-bottom:none}
+.cbox-label{font-size:11px;flex:1}
+.cbox-label.done{text-decoration:line-through;color:var(--mu)}
+
 .main{margin-left:225px;flex:1;padding:22px 26px;max-width:1120px}
 .ph h2{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;margin-bottom:3px}
 .ph p{font-size:12px;color:var(--mu);margin-bottom:18px}
@@ -135,6 +163,15 @@ select.inp{cursor:pointer}
 .platform-row{display:grid;grid-template-columns:120px 1fr 1fr 80px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(42,56,48,.08);font-size:11px}
 
 @media(max-width:820px){.g2,.g3{grid-template-columns:1fr}.main{padding:12px}.sb{width:190px}.main{margin-left:190px}}
+
+.img-area{border:2px dashed var(--bor);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:7px}
+.img-area:hover{border-color:var(--a1);background:rgba(232,131,106,.04)}
+.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(75px,1fr));gap:5px;margin-top:6px}
+.img-thumb{width:100%;aspect-ratio:1;object-fit:cover;border-radius:5px;border:1px solid var(--bor);cursor:pointer}
+.img-wrap{position:relative}
+.img-del{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.65);border:none;color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cb{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--bor);cursor:pointer;flex-shrink:0;background:none;appearance:none;-webkit-appearance:none;transition:all .15s;vertical-align:middle}
+.cb:checked{background:var(--a3);border-color:var(--a3)}
 </style>
 </head>
 <body>
@@ -144,6 +181,32 @@ select.inp{cursor:pointer}
       <h1>Creator OS</h1>
       <p>Marisol's Empire</p>
       <div class="autosave">💾 Auto-saves to your device</div>
+    </div>
+
+
+    <!-- POMODORO TIMER -->
+    <div class="pomo">
+      <div class="pomo-hdr"><span>⏱️ Pomodoro</span><span id="pomo-dots">🍅</span></div>
+      <div class="pomo-bar"><div class="pomo-fill" id="pomo-bar" style="width:100%"></div></div>
+      <div class="pomo-time" id="pomo-time">25:00</div>
+      <div class="pomo-phase" id="pomo-phase">Work Session 💪</div>
+      <div class="pomo-rounds-txt" id="pomo-rounds">Round 1 of 4</div>
+      <div class="pomo-btns">
+        <button class="pomo-btn pomo-go" id="pomo-play" onclick="pomoToggle()">&#9654; Start</button>
+        <button class="pomo-btn pomo-sec" onclick="pomoSkip()">&#9197; Skip</button>
+        <button class="pomo-btn pomo-sec" onclick="pomoReset()">&#8635; Reset</button>
+      </div>
+      <div class="pomo-cust" onclick="document.getElementById('pomo-panel').classList.toggle('open')">&#9881;&#65039; Customize Timer</div>
+      <div class="pomo-settings" id="pomo-panel">
+        <div class="pomo-row">
+          <div><span class="pomo-lbl">Work (min)</span><input class="pomo-inp" type="number" id="pw" value="25" min="1" max="90" onchange="pomoUpdate()"/></div>
+          <div><span class="pomo-lbl">Short Break</span><input class="pomo-inp" type="number" id="psb" value="5" min="1" max="30" onchange="pomoUpdate()"/></div>
+        </div>
+        <div class="pomo-row">
+          <div><span class="pomo-lbl">Long Break</span><input class="pomo-inp" type="number" id="plb" value="15" min="1" max="60" onchange="pomoUpdate()"/></div>
+          <div><span class="pomo-lbl">Rounds</span><input class="pomo-inp" type="number" id="prd" value="4" min="1" max="8" onchange="pomoUpdate()"/></div>
+        </div>
+      </div>
     </div>
 
     <!-- ACCOUNT SWITCHER -->
@@ -164,7 +227,7 @@ select.inp{cursor:pointer}
     </div>
 
     <nav class="snav" id="sidebar-nav"></nav>
-    <div class="sb-footer">Creator OS v3.0 · Multi-Account</div>
+    <div class="sb-footer">Creator OS v4.0 FINAL</div>
   </div>
 
   <main class="main" id="main-content"></main>
@@ -532,6 +595,7 @@ function renderGoals(){
             <button class="btn btn-ghost btn-sm" onclick="openGoalModal('${g.id}')">Edit</button>
             <button class="btn btn-danger btn-sm" onclick="deleteGoal('${g.id}')">Delete</button>
           </div>
+          <label style="display:flex;align-items:center;gap:7px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(42,56,48,.1);cursor:pointer"><input type="checkbox" class="cb" style="width:15px;height:15px;accent-color:var(--a3)"/><span style="font-size:10px;color:var(--mu)">Mark Goal Complete ✓</span></label>
         </div>
       `).join('')}
     </div>
@@ -577,6 +641,7 @@ function renderPlanner(){
         ${list.map(p=>{
           const pl=acc.pillars[p.pillar];
           return`<tr>
+            <td><input type='checkbox' class='cb' style='width:14px;height:14px;accent-color:#7ab88a'/></td>
             <td><div style="font-weight:600;font-size:11px">${esc(p.title)||'Untitled'}</div>${p.hook?`<div style="font-size:9px;color:var(--mu);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.hook)}</div>`:''}</td>
             <td>${pl?`<span class="tag" style="background:${pl.color}20;color:${pl.color}">${pl.emoji} ${esc(pl.name)}</span>`:''}</td>
             <td style="font-size:10px">${esc(p.platform)}</td>
@@ -1150,7 +1215,7 @@ function renderNotes(){
             <input style="flex:1;background:none;border:none;outline:none;font-size:18px;font-weight:700;font-family:'Cormorant Garamond',serif;color:${act.color}" value="${esc(act.title)}" id="note-title-inp" onblur="updateNote('title',this.value)"/>
             <input type="color" value="${act.color}" onchange="updateNote('color',this.value)" style="width:26px;height:26px;border:none;border-radius:5px;cursor:pointer;padding:2px;background:none"/>
           </div>
-          <textarea class="inp" id="note-content-inp" style="flex:1;min-height:300px;border-color:${act.color}38;resize:vertical" onblur="updateNote('content',this.value)" placeholder="Brain dump everything here...">${esc(act.content)}</textarea>
+          <div style="margin-bottom:8px"><div style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;margin-bottom:5px">Images</div><div class="img-area" onclick="document.getElementById('nii').click()"><input type="file" id="nii" accept="image/*" multiple style="display:none" onchange="noteImgUp(this)"/><div style="font-size:14px">🖼️</div><div style="font-size:9px;color:var(--mu)">Upload images</div></div><div class="img-grid" id="note-imgs"></div></div><textarea class="inp" id="note-content-inp" style="flex:1;min-height:300px;border-color:${act.color}38;resize:vertical" onblur="updateNote('content',this.value)" placeholder="Brain dump everything here...">${esc(act.content)}</textarea>
           <div style="display:flex;gap:7px;margin-top:10px">
             <button class="btn btn-primary btn-sm" onclick="updateNote('content',document.getElementById('note-content-inp').value);updateNote('title',document.getElementById('note-title-inp').value)">💾 Save</button>
             <button class="btn btn-ghost btn-sm" onclick="pinNote('${act.id}')">${act.pinned?'Unpin':'📌 Pin'}</button>
@@ -1191,6 +1256,109 @@ const addBtn=document.createElement('button');addBtn.className='acc-option acc-a
 
 renderNav();
 renderPage();
+
+
+// ─── POMODORO ─────────────────────────────────────────────────────────────────
+var POMO = {w:25,sb:5,lb:15,rd:4,phase:'work',round:1,run:false,tmr:null,sec:1500,tot:1500};
+function pomoUpdate(){POMO.w=Number(document.getElementById('pw')||{value:25}).value||25;POMO.sb=Number((document.getElementById('psb')||{value:5}).value)||5;POMO.lb=Number((document.getElementById('plb')||{value:15}).value)||15;POMO.rd=Number((document.getElementById('prd')||{value:4}).value)||4;if(!POMO.run)pomoReset();}
+function pomoToggle(){if(POMO.run){clearInterval(POMO.tmr);POMO.run=false;var b=document.getElementById('pomo-play');if(b)b.textContent='▶ Start';}else{POMO.run=true;var b=document.getElementById('pomo-play');if(b)b.textContent='⏸ Pause';POMO.tmr=setInterval(pomoTick,1000);}}
+function pomoTick(){POMO.sec--;if(POMO.sec<=0){pomoAlert();pomoNext();}pomoDisplay();}
+function pomoNext(){if(POMO.phase==='work'){if(POMO.round>=POMO.rd){POMO.phase='long';POMO.sec=POMO.lb*60;POMO.tot=POMO.lb*60;}else{POMO.phase='short';POMO.sec=POMO.sb*60;POMO.tot=POMO.sb*60;}}else if(POMO.phase==='short'){POMO.round++;POMO.phase='work';POMO.sec=POMO.w*60;POMO.tot=POMO.w*60;}else{POMO.round=1;POMO.phase='work';POMO.sec=POMO.w*60;POMO.tot=POMO.w*60;}}
+function pomoSkip(){clearInterval(POMO.tmr);POMO.run=false;var b=document.getElementById('pomo-play');if(b)b.textContent='▶ Start';pomoNext();pomoDisplay();}
+function pomoReset(){clearInterval(POMO.tmr);POMO.run=false;POMO.phase='work';POMO.round=1;POMO.sec=POMO.w*60;POMO.tot=POMO.w*60;var b=document.getElementById('pomo-play');if(b)b.textContent='▶ Start';pomoDisplay();}
+function pomoAlert(){try{var c=new(window.AudioContext||window.webkitAudioContext)();var o=c.createOscillator();var g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=880;g.gain.value=0.3;o.start();setTimeout(function(){o.stop();c.close();},500);}catch(e){}}
+function pomoDisplay(){var m=Math.floor(POMO.sec/60),s=POMO.sec%60;var te=document.getElementById('pomo-time');var pe=document.getElementById('pomo-phase');var re=document.getElementById('pomo-rounds');var be=document.getElementById('pomo-bar');var de=document.getElementById('pomo-dots');if(te)te.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;if(pe)pe.textContent=POMO.phase==='work'?'Work Session 💪':POMO.phase==='short'?'Short Break ☕':'Long Break 🌿';if(re)re.textContent='Round '+POMO.round+' of '+POMO.rd;if(be)be.style.width=((POMO.sec/POMO.tot)*100)+'%';if(de){var d='';for(var i=0;i<POMO.rd;i++)d+=i<POMO.round?'🍅':'⬜';de.textContent=d;}if(te)te.style.color=POMO.phase==='work'?'var(--a1)':POMO.phase==='short'?'var(--a3)':'var(--a5)';}
+pomoDisplay();
+if(Notification&&Notification.permission==='default')Notification.requestPermission();
+
+// ─── GEMINI AI ─────────────────────────────────────────────────────────────────
+var GEMINI_KEY = 'AIzaSyA2h60F2LvoObJ4o4DvXs5KvtQCKFXbG9w';
+var GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_KEY;
+
+var GEMINI_SYS = {
+  seat1a: 'You are the AI Content Agent for "The Crew Lounge" (@seat1a) — a faceless TikTok brand run by Marisol. Niche: Faceless flight attendant storytelling that blurs fiction and reality. Voice: Witty, warm, mysterious, cinematic. Never desperate. Always in control. Write viral hooks, scripts, captions, content plans tailored to this brand.',
+  continuum: 'You are the AI Content Agent for "Continuum Valley" — a community movement brand run by Marisol. Building a produce market and resource hub to feed families in need. Voice: Warm, purposeful, inspiring. Write content that moves people to action and builds community.',
+  everythingseat: 'You are the AI Content Agent for "The Everything Seat" — a self-help podcast brand run by Marisol. Covers mindset, business, relationships, spirituality, and healing. Voice: Real, raw, empowering, conversational. Write podcast episode ideas, show notes, social clips, and growth content.'
+};
+
+function getSys(){
+  var acc = getAcc ? getAcc() : {id:'seat1a'};
+  return GEMINI_SYS[acc.id] || ('You are an AI content agent for ' + acc.name + '. Help Marisol create great content for this brand.');
+}
+
+async function sendGeminiMessage(userMsg){
+  var msgs = document.getElementById('chat-msgs');
+  var btn = document.getElementById('chat-send-btn');
+  if(!userMsg) { var inp = document.getElementById('chat-input'); if(inp){userMsg=inp.value.trim();inp.value='';} }
+  if(!userMsg) return;
+  if(msgs) { msgs.innerHTML += '<div class="chat-msg user">'+escapeHtml(userMsg)+'</div><div class="chat-msg ai" id="loading-msg"><div class="ai-label">✦ Gemini AI</div>Generating your content...</div>'; msgs.scrollTop=msgs.scrollHeight; }
+  if(btn) btn.disabled = true;
+  try {
+    var res = await fetch(GEMINI_URL, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system_instruction:{parts:[{text:getSys()}]},contents:[{role:'user',parts:[{text:userMsg}]}]})});
+    var data = await res.json();
+    var reply = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text) || 'Sorry, something went wrong. Try again!';
+    var loading = document.getElementById('loading-msg');
+    if(loading) loading.outerHTML = '<div class="chat-msg ai"><div class="ai-label">✦ Gemini AI</div>'+escapeHtml(reply)+'</div>';
+  } catch(e) {
+    var loading = document.getElementById('loading-msg');
+    if(loading) loading.outerHTML = '<div class="chat-msg ai"><div class="ai-label">✦ Gemini AI</div>Connection error. Check your internet and try again.</div>';
+  }
+  if(btn) btn.disabled = false;
+  if(msgs) msgs.scrollTop = msgs.scrollHeight;
+}
+
+function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Override sendChat to use Gemini
+window.sendChat = function(text) { sendGeminiMessage(text); };
+
+
+
+// IMAGE UPLOAD
+function IH(key,imgs){
+  var i=imgs||[];
+  return '<div class="img-area" onclick="document.getElementById(\'ii_'+key+'\').click()"><input type="file" id="ii_'+key+'" accept="image/*" multiple style="display:none" onchange="IU(\''+key+'\',this)"/><div style="font-size:18px;margin-bottom:3px">🖼️</div><div style="font-size:10px;color:var(--mu)">Tap to upload images</div></div>'
+  +'<div class="img-grid" id="ig_'+key+'">'+i.map(function(img,idx){return'<div class="img-wrap"><img src="'+img+'" class="img-thumb" onclick="VI(\''+img+'\')"/><button class="img-del" onclick="DI(\''+key+'\','+idx+')">✕</button></div>';}).join('')+'</div>';
+}
+function IU(key,inp){
+  var files=Array.from(inp.files);var imgs=load('img_'+key,[])||[];var n=0;
+  files.forEach(function(f){var r=new FileReader();r.onload=function(e){imgs.push(e.target.result);n++;if(n===files.length){save('img_'+key,imgs);var g=document.getElementById('ig_'+key);if(g)g.innerHTML=imgs.map(function(img,i){return'<div class="img-wrap"><img src="'+img+'" class="img-thumb" onclick="VI(\''+img+'\')"/><button class="img-del" onclick="DI(\''+key+'\','+i+')">✕</button></div>';}).join('');}};r.readAsDataURL(f);});
+}
+function DI(key,idx){var imgs=load('img_'+key,[])||[];imgs.splice(idx,1);save('img_'+key,imgs);var g=document.getElementById('ig_'+key);if(g)g.innerHTML=imgs.map(function(img,i){return'<div class="img-wrap"><img src="'+img+'" class="img-thumb" onclick="VI(\''+img+'\')"/><button class="img-del" onclick="DI(\''+key+'\','+i+')">✕</button></div>';}).join('');}
+function VI(src){openModal('Image Preview','<img src="'+src+'" style="width:100%;border-radius:8px;max-height:70vh;object-fit:contain"/>');}
+
+// CHECKBOX TOGGLE
+function TC(sk,f,v){var c=loadA(sk,{});c[f]=v;saveA(sk,c);}
+
+
+function noteImgUp(inp){
+  if(!ST.activeNote) return;
+  var files = Array.from(inp.files);
+  var imgs = load('img_note_'+ST.activeNote, []) || [];
+  var n = 0;
+  files.forEach(function(f){
+    var r = new FileReader();
+    r.onload = function(e){
+      imgs.push(e.target.result);
+      n++;
+      if(n===files.length){
+        save('img_note_'+ST.activeNote, imgs);
+        var g = document.getElementById('note-imgs');
+        if(g) g.innerHTML = imgs.map(function(img,i){return '<div class="img-wrap"><img src="'+img+'" class="img-thumb" onclick="VI(\''+img+'\')"/><button class="img-del" onclick="delNoteImg('+i+')">X</button></div>';}).join('');
+      }
+    };
+    r.readAsDataURL(f);
+  });
+}
+function delNoteImg(idx){
+  if(!ST.activeNote) return;
+  var imgs = load('img_note_'+ST.activeNote,[]) || [];
+  imgs.splice(idx,1);
+  save('img_note_'+ST.activeNote, imgs);
+  var g = document.getElementById('note-imgs');
+  if(g) g.innerHTML = imgs.map(function(img,i){return '<div class="img-wrap"><img src="'+img+'" class="img-thumb" onclick="VI(\''+img+'\')"/><button class="img-del" onclick="delNoteImg('+i+')">X</button></div>';}).join('');
+}
+
 </script>
 </body>
 </html>
