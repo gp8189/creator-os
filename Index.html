@@ -19,7 +19,10 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}button{cursor:poin
 .logo{padding:16px;border-bottom:1px solid var(--bor)}
 .logo h1{font-family:'Cormorant Garamond',serif;font-size:20px;background:linear-gradient(135deg,var(--a1),var(--a3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
 .logo p{font-size:10px;color:var(--mu);margin-top:2px}
-.autosave{font-size:9px;color:var(--a3);margin-top:4px}
+.autosave{font-size:9px;color:var(--a3);margin-top:4px;transition:color .3s}
+.autosave.syncing{color:var(--a4);animation:pulse 1.5s infinite}
+.autosave.error{color:var(--dn)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
 /* ACCOUNT SWITCHER */
 .acc-switch{padding:10px 12px;border-bottom:1px solid var(--bor)}
@@ -176,12 +179,16 @@ select.inp{cursor:pointer}
 </style>
 </head>
 <body>
+<div id="loading-overlay" style="position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;transition:opacity .4s">
+  <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;background:linear-gradient(135deg,var(--a1),var(--a3));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Creator OS</div>
+  <div style="font-size:11px;color:var(--mu)">☁️ Syncing your data...</div>
+</div>
 <div class="shell">
   <div class="sb">
     <div class="logo">
       <h1>Creator OS</h1>
       <p id="logo-sub">Your Content Empire</p>
-      <div class="autosave">💾 Auto-saves to your device</div>
+      <div class="autosave" id="sync-status">☁️ Syncing...</div>
     </div>
 
 
@@ -242,9 +249,73 @@ select.inp{cursor:pointer}
 </div>
 
 <script>
-// ─── STORAGE ──────────────────────────────────────────────────────────────────
-function load(key,def){try{const v=localStorage.getItem(key);return v?JSON.parse(v):def;}catch{return def;}}
-function save(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}}
+// ─── STORAGE (Cloud-Synced) ──────────────────────────────────────────────────
+const CLOUD=typeof window.storage!=='undefined';
+const _mem={};
+const _saveQueue=new Map();
+let _saveTimer=null;
+
+function load(key,def){
+  if(key in _mem){try{return JSON.parse(_mem[key]);}catch{return def;}}
+  try{const v=localStorage.getItem(key);if(v!=null){_mem[key]=v;return JSON.parse(v);}}catch{}
+  return def;
+}
+
+function save(key,val){
+  try{
+    const json=JSON.stringify(val);
+    _mem[key]=json;
+    try{localStorage.setItem(key,json);}catch{}
+    if(CLOUD){
+      _saveQueue.set(key,json);
+      if(!_saveTimer)_saveTimer=setTimeout(_flushSaves,300);
+    }
+  }catch(e){console.warn('Save failed:',e);}
+}
+
+async function _flushSaves(){
+  _saveTimer=null;
+  const entries=[..._saveQueue.entries()];
+  _saveQueue.clear();
+  _setSyncStatus('syncing');
+  try{
+    await Promise.all(entries.map(([k,v])=>window.storage.set(k,v)));
+    _setSyncStatus('synced');
+  }catch(e){
+    console.warn('Cloud save failed:',e);
+    _setSyncStatus('error');
+  }
+}
+
+function _setSyncStatus(s){
+  const el=document.getElementById('sync-status');
+  if(!el)return;
+  el.className='autosave'+(s==='syncing'?' syncing':s==='error'?' error':'');
+  el.textContent=s==='syncing'?'☁️ Syncing...':s==='error'?'⚠️ Sync error — retrying':'☁️ Synced across devices';
+}
+
+async function cloudDelete(key){
+  delete _mem[key];
+  try{localStorage.removeItem(key);}catch{}
+  if(!CLOUD)return;
+  try{await window.storage.delete(key);}catch(e){}
+}
+
+async function _pullFromCloud(){
+  if(!CLOUD)return;
+  try{
+    const result=await window.storage.list('cos_');
+    if(result&&result.keys&&result.keys.length>0){
+      const items=await Promise.all(result.keys.map(k=>window.storage.get(k).catch(()=>null)));
+      items.forEach(item=>{
+        if(item&&item.value!=null){
+          _mem[item.key]=item.value;
+          try{localStorage.setItem(item.key,item.value);}catch{}
+        }
+      });
+    }
+  }catch(e){console.warn('Cloud pull failed:',e);}
+}
 
 // ─── ACCOUNTS ────────────────────────────────────────────────────────────────
 const ACCOUNT_DEFAULTS = [
@@ -341,14 +412,14 @@ function deleteAccount(idx){
   if(ACCOUNTS.length<=1){alert('You must have at least one account.');return;}
   const acc=ACCOUNTS[idx];
   if(!confirm(`Delete "${acc.name}"? All data for this account will be removed.`))return;
-  // Remove account-specific localStorage keys
+  // Remove account-specific keys from all stores
   const prefix='cos_'+acc.id+'_';
-  const keysToRemove=[];
-  for(let i=0;i<localStorage.length;i++){
-    const k=localStorage.key(i);
-    if(k&&k.startsWith(prefix))keysToRemove.push(k);
-  }
-  keysToRemove.forEach(k=>localStorage.removeItem(k));
+  const keysToRemove=new Set();
+  // Check in-memory store
+  Object.keys(_mem).forEach(k=>{if(k.startsWith(prefix))keysToRemove.add(k);});
+  // Check localStorage
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(prefix))keysToRemove.add(k);}}catch{}
+  keysToRemove.forEach(k=>{cloudDelete(k);});
   // Remove from accounts array
   ACCOUNTS.splice(idx,1);
   save('cos_accounts',ACCOUNTS);
@@ -1361,17 +1432,32 @@ function toggleProdDone(id,done){const prods=loadA('prods',DEF_PRODS);saveA('pro
 function toggleDealDone(id,done){const deals=loadA('deals',DEF_DEALS);saveA('deals',deals.map(d=>d.id==id?{...d,done}:d));renderPage();}
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
-const acc=getAcc();
-document.getElementById('acc-emoji').textContent=acc.emoji;
-document.getElementById('acc-name').textContent=acc.name;
-// update logo sub
-const logoSub=document.getElementById('logo-sub');
-if(logoSub)logoSub.textContent=acc.name+' · Creator OS';
-// rebuild dropdown with saved accounts
-rebuildDropdown();
+async function initApp(){
+  // Pull cloud data into localStorage before loading anything
+  await _pullFromCloud();
 
-renderNav();
-renderPage();
+  // Reload accounts from (now-synced) storage
+  ACCOUNTS = load('cos_accounts', ACCOUNT_DEFAULTS);
+  ACTIVE_ACC = load('cos_active_acc', 0);
+
+  const acc=getAcc();
+  document.getElementById('acc-emoji').textContent=acc.emoji;
+  document.getElementById('acc-name').textContent=acc.name;
+  // update logo sub
+  const logoSub=document.getElementById('logo-sub');
+  if(logoSub)logoSub.textContent=acc.name+' · Creator OS';
+  // rebuild dropdown with saved accounts
+  rebuildDropdown();
+
+  renderNav();
+  renderPage();
+
+  // Remove loading overlay
+  const overlay=document.getElementById('loading-overlay');
+  if(overlay){overlay.style.opacity='0';setTimeout(()=>overlay.remove(),400);}
+  _setSyncStatus('synced');
+}
+initApp();
 
 
 // ─── POMODORO ─────────────────────────────────────────────────────────────────
