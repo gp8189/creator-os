@@ -1,67 +1,55 @@
-import { getStore } from "@netlify/blobs";
+const { getStore } = require("@netlify/blobs");
 
-export default async (req, context) => {
-  const store = getStore("creatoros");
-  const url = new URL(req.url);
-  const method = req.method;
-
-  // CORS headers for all responses
+exports.handler = async function(event, context) {
   const cors = {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
-    "Content-Type": "application/json",
+    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS"
   };
 
-  if (method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: cors });
+  if (event.httpMethod === "OPTIONS") {
+    return { statusCode: 200, headers: cors, body: "" };
   }
 
   try {
-    // GET /sync?key=xxx  → get one key
-    // GET /sync?list=cos_  → list keys with prefix
-    if (method === "GET") {
-      const key = url.searchParams.get("key");
-      const prefix = url.searchParams.get("list");
+    const store = getStore("creator-os");
+    const params = new URLSearchParams(event.queryStringParameters || {});
+    const key = params.get("key");
+    const list = params.get("list");
 
-      if (prefix !== null) {
-        const result = await store.list({ prefix });
-        const keys = result.blobs.map((b) => b.key);
-        return new Response(JSON.stringify({ keys }), { headers: cors });
+    if (event.httpMethod === "GET") {
+      if (list !== null) {
+        const result = await store.list({ prefix: list });
+        const keys = result.blobs.map(b => b.key);
+        return { statusCode: 200, headers: cors, body: JSON.stringify({ keys }) };
       }
-
       if (key) {
         const value = await store.get(key);
         if (value === null) {
-          return new Response(JSON.stringify({ value: null }), { headers: cors });
+          return { statusCode: 200, headers: cors, body: JSON.stringify({ value: null }) };
         }
-        return new Response(JSON.stringify({ key, value }), { headers: cors });
+        return { statusCode: 200, headers: cors, body: JSON.stringify({ key, value }) };
       }
     }
 
-    // POST /sync  body: { key, value }  → set key
-    if (method === "POST") {
-      const body = await req.json();
+    if (event.httpMethod === "POST") {
+      const body = JSON.parse(event.body);
       const { key, value } = body;
-      if (!key) return new Response(JSON.stringify({ error: "no key" }), { status: 400, headers: cors });
+      if (!key) return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "no key" }) };
       await store.set(key, value);
-      return new Response(JSON.stringify({ ok: true, key }), { headers: cors });
+      return { statusCode: 200, headers: cors, body: JSON.stringify({ ok: true, key }) };
     }
 
-    // DELETE /sync?key=xxx  → delete key
-    if (method === "DELETE") {
-      const key = url.searchParams.get("key");
-      if (!key) return new Response(JSON.stringify({ error: "no key" }), { status: 400, headers: cors });
+    if (event.httpMethod === "DELETE") {
+      if (!key) return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "no key" }) };
       await store.delete(key);
-      return new Response(JSON.stringify({ ok: true, key }), { headers: cors });
+      return { statusCode: 200, headers: cors, body: JSON.stringify({ ok: true, key }) };
     }
 
-    return new Response(JSON.stringify({ error: "method not allowed" }), { status: 405, headers: cors });
+    return { statusCode: 405, headers: cors, body: JSON.stringify({ error: "method not allowed" }) };
 
   } catch (e) {
     console.error("Sync error:", e);
-    return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: cors });
+    return { statusCode: 500, headers: cors, body: JSON.stringify({ error: String(e) }) };
   }
 };
-
-export const config = { path: "/sync" };
