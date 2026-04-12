@@ -629,6 +629,23 @@ function renderBrandIdentity(){
         <div class="fg"><label>Core Hashtags</label><textarea class="inp" id="bi-hashtags">${esc(acc.hashtags||'')}</textarea></div>
         <div class="fg"><label>Posting Cadence</label><input class="inp" id="bi-posting" value="${esc(acc.posting||'')}"/></div>
       </div>
+      <div class="card">
+        <div class="card-title">Content Pillars</div>
+        <div id="pillars-edit-wrap">
+          ${acc.pillars.map((p,i)=>`
+            <div style="background:var(--sur);border:1px solid var(--bor);border-radius:8px;padding:10px;margin-bottom:8px">
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+                <input class="inp" style="width:52px;text-align:center" placeholder="🎭" id="pillar-emoji-${i}" value="${esc(p.emoji||'')}"/>
+                <input class="inp" style="flex:1" placeholder="Pillar name" id="pillar-name-${i}" value="${esc(p.name||'')}"/>
+                <input type="color" value="${p.color||'#e8836a'}" id="pillar-color-${i}" style="width:36px;height:36px;border:1px solid var(--bor);border-radius:6px;cursor:pointer;padding:2px;background:var(--sur)"/>
+                <button onclick="removePillar(${i})" style="background:rgba(224,112,96,.1);color:var(--dn);border:1px solid rgba(224,112,96,.2);border-radius:5px;padding:4px 9px;font-size:11px;cursor:pointer;flex-shrink:0">✕</button>
+              </div>
+              <input class="inp" placeholder="Short description" id="pillar-desc-${i}" value="${esc(p.desc||'')}"/>
+            </div>
+          `).join('')}
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="addPillar()" style="margin-top:4px">+ Add Pillar</button>
+      </div>
       <div style="display:flex;gap:9px">
         <button class="btn btn-primary" onclick="saveBrandIdentity()">Save Brand Identity</button>
         <button class="btn btn-ghost" onclick="STATE.editingBrand=false;renderPage()">Cancel</button>
@@ -681,12 +698,49 @@ function saveBrandIdentity(){
   acc.audience=document.getElementById('bi-audience')?.value||acc.audience;
   acc.hashtags=document.getElementById('bi-hashtags')?.value||acc.hashtags;
   acc.posting=document.getElementById('bi-posting')?.value||acc.posting;
+  // Collect pillars
+  const newPillars=[];
+  let i=0;
+  while(document.getElementById('pillar-name-'+i)){
+    newPillars.push({
+      name:document.getElementById('pillar-name-'+i)?.value||'',
+      desc:document.getElementById('pillar-desc-'+i)?.value||'',
+      emoji:document.getElementById('pillar-emoji-'+i)?.value||'',
+      color:document.getElementById('pillar-color-'+i)?.value||'#e8836a',
+    });
+    i++;
+  }
+  acc.pillars=newPillars;
   ACCOUNTS[ACTIVE_ACC]=acc;save('cos_accounts',ACCOUNTS);
   const extra={tagline:document.getElementById('bi-tagline')?.value||'',logo_desc:document.getElementById('bi-logo')?.value||'',typography_heading:document.getElementById('bi-typo-h')?.value||'',typography_body:document.getElementById('bi-typo-b')?.value||'',image_style:document.getElementById('bi-imgstyle')?.value||'',vision:document.getElementById('bi-vision')?.value||''};
   saveA('brand_extra',extra);
   STATE.editingBrand=false;
   document.getElementById('acc-name').textContent=acc.name;
   document.getElementById('acc-emoji').textContent=acc.emoji;
+  renderPage();
+}
+function addPillar(){
+  const acc=getAcc();
+  // Snapshot current pillar inputs first
+  const cur=[];let i=0;
+  while(document.getElementById('pillar-name-'+i)){
+    cur.push({name:document.getElementById('pillar-name-'+i)?.value||'',desc:document.getElementById('pillar-desc-'+i)?.value||'',emoji:document.getElementById('pillar-emoji-'+i)?.value||'',color:document.getElementById('pillar-color-'+i)?.value||'#e8836a'});
+    i++;
+  }
+  acc.pillars=[...cur,{name:'',desc:'',emoji:'✨',color:'#e8836a'}];
+  ACCOUNTS[ACTIVE_ACC]=acc;save('cos_accounts',ACCOUNTS);
+  renderPage();
+}
+function removePillar(idx){
+  const acc=getAcc();
+  const cur=[];let i=0;
+  while(document.getElementById('pillar-name-'+i)){
+    cur.push({name:document.getElementById('pillar-name-'+i)?.value||'',desc:document.getElementById('pillar-desc-'+i)?.value||'',emoji:document.getElementById('pillar-emoji-'+i)?.value||'',color:document.getElementById('pillar-color-'+i)?.value||'#e8836a'});
+    i++;
+  }
+  cur.splice(idx,1);
+  acc.pillars=cur;
+  ACCOUNTS[ACTIVE_ACC]=acc;save('cos_accounts',ACCOUNTS);
   renderPage();
 }
 
@@ -1476,33 +1530,13 @@ if(Notification&&Notification.permission==='default')Notification.requestPermiss
 // ─── IMAGE UPLOAD HELPER ──────────────────────────────────────────────────────
 function imgUploadBtn(storageKey,label){
   const existing=load(accKey(storageKey),'');
-  const pdfKey=storageKey+'_pdf';
-  const existingPdf=load(accKey(pdfKey),'');
-  const existingPdfName=load(accKey(pdfKey+'_name'),'');
   return`<div style="margin-top:8px">
-    <div style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;margin-bottom:6px">${label||'Files'}</div>
+    <div style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;margin-bottom:6px">${label||'Image'}</div>
     ${existing?`<div style="position:relative;margin-bottom:5px"><img src="${existing}" style="width:100%;max-height:180px;object-fit:cover;border-radius:7px;border:1px solid var(--bor)"/><button onclick="removeImg('${storageKey}')" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.7);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button></div>`:''}
-    ${existingPdf?`<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--sur);border:1px solid var(--bor);border-radius:7px;margin-bottom:5px">
-      <span style="font-size:18px">📄</span>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:11px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(existingPdfName||'Document.pdf')}</div>
-        <div style="font-size:9px;color:var(--mu)">PDF attached</div>
-      </div>
-      <div style="display:flex;gap:4px">
-        <button onclick="var d=this.getAttribute('data-pdf');var w=window.open('','_blank');w.document.write('<html><body style=margin:0><embed src=\\''+d+'\\' type=\\'application/pdf\\' width=\\'100%\\' height=\\'100%\\' style=\\'position:fixed;top:0;left:0;width:100%;height:100%\\'></body></html>');w.document.close();" data-pdf="${existingPdf}" style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;background:rgba(122,184,138,.15);color:var(--a3);border:1px solid rgba(122,184,138,.3);cursor:pointer">⬇ View</button>
-        <button onclick="removePdf('${pdfKey}')" style="padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;background:rgba(224,112,96,.1);color:var(--dn);border:1px solid rgba(224,112,96,.2);cursor:pointer">✕</button>
-      </div>
-    </div>`:''}
-    <div style="display:flex;gap:6px">
-      <label style="flex:1;display:flex;align-items:center;gap:6px;padding:7px 11px;background:var(--sur);border:1px dashed var(--bor);border-radius:7px;cursor:pointer;font-size:11px;color:var(--mu);transition:all .15s" onmouseover="this.style.borderColor='var(--a1)';this.style.color='var(--a1)'" onmouseout="this.style.borderColor='var(--bor)';this.style.color='var(--mu)'">
-        🖼️ ${existing?'Replace':'Upload'} Image
-        <input type="file" accept="image/*" style="display:none" onchange="handleImgUpload(event,'${storageKey}')"/>
-      </label>
-      <label style="flex:1;display:flex;align-items:center;gap:6px;padding:7px 11px;background:var(--sur);border:1px dashed var(--bor);border-radius:7px;cursor:pointer;font-size:11px;color:var(--mu);transition:all .15s" onmouseover="this.style.borderColor='var(--a3)';this.style.color='var(--a3)'" onmouseout="this.style.borderColor='var(--bor)';this.style.color='var(--mu)'">
-        📄 ${existingPdf?'Replace':'Upload'} PDF
-        <input type="file" accept="application/pdf" style="display:none" onchange="handlePdfUpload(event,'${pdfKey}')"/>
-      </label>
-    </div>
+    <label style="display:flex;align-items:center;gap:6px;padding:7px 11px;background:var(--sur);border:1px dashed var(--bor);border-radius:7px;cursor:pointer;font-size:11px;color:var(--mu);transition:all .15s" onmouseover="this.style.borderColor='var(--a1)';this.style.color='var(--a1)'" onmouseout="this.style.borderColor='var(--bor)';this.style.color='var(--mu)'">
+      🖼️ ${existing?'Replace':'Upload'} Image
+      <input type="file" accept="image/*" style="display:none" onchange="handleImgUpload(event,'${storageKey}')"/>
+    </label>
   </div>`;
 }
 function handleImgUpload(e,key){
