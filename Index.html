@@ -378,7 +378,7 @@ function renderDashboard(){
   const pub=posts.filter(p=>p.status==='Published').length;
   return`
     <div class="ph">
-      <h2>Good morning, <span class="glow">${esc(acc.name)}</span> ${acc.emoji}</h2>
+      <h2>${(()=>{const h=new Date().getHours();return h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Good night';})()} <span class="glow">${esc(acc.name)}</span> ${acc.emoji}</h2>
       <p>${acc.name} · ${acc.handle} · All data auto-saves to your device</p>
     </div>
     <div class="sg">
@@ -1335,13 +1335,33 @@ if(Notification&&Notification.permission==='default')Notification.requestPermiss
 // ─── IMAGE UPLOAD HELPER ──────────────────────────────────────────────────────
 function imgUploadBtn(storageKey,label){
   const existing=load(accKey(storageKey),'');
+  const pdfKey=storageKey+'_pdf';
+  const existingPdf=load(accKey(pdfKey),'');
+  const existingPdfName=load(accKey(pdfKey+'_name'),'');
   return`<div style="margin-top:8px">
-    <div style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;margin-bottom:4px">${label||'Image'}</div>
+    <div style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;margin-bottom:6px">${label||'Files'}</div>
     ${existing?`<div style="position:relative;margin-bottom:5px"><img src="${existing}" style="width:100%;max-height:180px;object-fit:cover;border-radius:7px;border:1px solid var(--bor)"/><button onclick="removeImg('${storageKey}')" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.7);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button></div>`:''}
-    <label style="display:flex;align-items:center;gap:6px;padding:7px 11px;background:var(--sur);border:1px dashed var(--bor);border-radius:7px;cursor:pointer;font-size:11px;color:var(--mu);transition:all .15s" onmouseover="this.style.borderColor='var(--a1)';this.style.color='var(--a1)'" onmouseout="this.style.borderColor='var(--bor)';this.style.color='var(--mu)'">
-      🖼️ ${existing?'Replace':'Upload'} Image
-      <input type="file" accept="image/*" style="display:none" onchange="handleImgUpload(event,'${storageKey}')"/>
-    </label>
+    ${existingPdf?`<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--sur);border:1px solid var(--bor);border-radius:7px;margin-bottom:5px">
+      <span style="font-size:18px">📄</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(existingPdfName||'Document.pdf')}</div>
+        <div style="font-size:9px;color:var(--mu)">PDF attached</div>
+      </div>
+      <div style="display:flex;gap:4px">
+        <a href="${existingPdf}" download="${esc(existingPdfName||'document.pdf')}" style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;background:rgba(122,184,138,.15);color:var(--a3);border:1px solid rgba(122,184,138,.3);text-decoration:none">⬇ View</a>
+        <button onclick="removePdf('${pdfKey}')" style="padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;background:rgba(224,112,96,.1);color:var(--dn);border:1px solid rgba(224,112,96,.2);cursor:pointer">✕</button>
+      </div>
+    </div>`:''}
+    <div style="display:flex;gap:6px">
+      <label style="flex:1;display:flex;align-items:center;gap:6px;padding:7px 11px;background:var(--sur);border:1px dashed var(--bor);border-radius:7px;cursor:pointer;font-size:11px;color:var(--mu);transition:all .15s" onmouseover="this.style.borderColor='var(--a1)';this.style.color='var(--a1)'" onmouseout="this.style.borderColor='var(--bor)';this.style.color='var(--mu)'">
+        🖼️ ${existing?'Replace':'Upload'} Image
+        <input type="file" accept="image/*" style="display:none" onchange="handleImgUpload(event,'${storageKey}')"/>
+      </label>
+      <label style="flex:1;display:flex;align-items:center;gap:6px;padding:7px 11px;background:var(--sur);border:1px dashed var(--bor);border-radius:7px;cursor:pointer;font-size:11px;color:var(--mu);transition:all .15s" onmouseover="this.style.borderColor='var(--a3)';this.style.color='var(--a3)'" onmouseout="this.style.borderColor='var(--bor)';this.style.color='var(--mu)'">
+        📄 ${existingPdf?'Replace':'Upload'} PDF
+        <input type="file" accept="application/pdf" style="display:none" onchange="handlePdfUpload(event,'${pdfKey}')"/>
+      </label>
+    </div>
   </div>`;
 }
 function handleImgUpload(e,key){
@@ -1351,7 +1371,19 @@ function handleImgUpload(e,key){
   reader.onload=ev=>{save(accKey(key),ev.target.result);renderPage();};
   reader.readAsDataURL(file);
 }
+function handlePdfUpload(e,key){
+  const file=e.target.files[0];if(!file)return;
+  if(file.size>10*1024*1024){alert('PDF too large! Please use a PDF under 10MB.');return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    save(accKey(key),ev.target.result);
+    save(accKey(key+'_name'),file.name);
+    renderPage();
+  };
+  reader.readAsDataURL(file);
+}
 function removeImg(key){save(accKey(key),'');renderPage();}
+function removePdf(key){save(accKey(key),'');save(accKey(key+'_name'),'');renderPage();}
 
 </script>
 </body>
