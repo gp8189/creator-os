@@ -12,12 +12,7 @@ exports.handler = async function(event, context) {
   }
 
   try {
-    const store = getStore({
-      name: "creator-os",
-      siteID: context.clientContext?.custom?.netlify?.site_id || process.env.SITE_ID,
-      token: process.env.NETLIFY_BLOBS_TOKEN || context.clientContext?.identity?.token
-    });
-
+    const store = getStore("creator-os");
     const params = event.queryStringParameters || {};
     const key = params.key;
     const list = params.list;
@@ -30,7 +25,7 @@ exports.handler = async function(event, context) {
       }
       if (key) {
         const value = await store.get(key);
-        return { statusCode: 200, headers: cors, body: JSON.stringify({ key, value }) };
+        return { statusCode: 200, headers: cors, body: JSON.stringify({ key, value: value ?? null }) };
       }
     }
 
