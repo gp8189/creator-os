@@ -311,16 +311,7 @@ async function _pullFromCloud(){
     if(!res.ok){_setSyncStatus('error');return;}
     const data=await res.json();
     if(data&&typeof data==='object'&&Object.keys(data).length>0){
-      // Clear stale local cache so Firebase data wins
-      try{
-        const keysToRemove=[];
-        for(let i=0;i<localStorage.length;i++){
-          const k=localStorage.key(i);
-          if(k&&k.startsWith('cos_'))keysToRemove.push(k);
-        }
-        keysToRemove.forEach(k=>{delete _mem[k];localStorage.removeItem(k);});
-      }catch{}
-      // Write Firebase data into memory and localStorage
+      // Merge Firebase data on top of local data — never clear local data
       Object.entries(data).forEach(([k,v])=>{
         if(v!=null){
           _mem[k]=v;
