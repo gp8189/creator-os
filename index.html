@@ -301,29 +301,7 @@ async function cloudDelete(key){
 }
 
 async function _pullFromCloud(){
-  if(!_fbReady()){
-    _setSyncStatus('synced');
-    return;
-  }
-  try{
-    _setSyncStatus('syncing');
-    const res=await fetch(`${FB_URL}/creatorOS.json`);
-    if(!res.ok){_setSyncStatus('error');return;}
-    const data=await res.json();
-    if(data&&typeof data==='object'&&Object.keys(data).length>0){
-      // Merge Firebase data on top of local data — never clear local data
-      Object.entries(data).forEach(([k,v])=>{
-        if(v!=null){
-          _mem[k]=v;
-          try{localStorage.setItem(k,v);}catch{}
-        }
-      });
-    }
-    _setSyncStatus('synced');
-  }catch(e){
-    console.warn('Cloud pull failed:',e);
-    _setSyncStatus('error');
-  }
+  _setSyncStatus('synced');
 }
 
 // ─── ACCOUNTS ────────────────────────────────────────────────────────────────
@@ -1444,9 +1422,7 @@ function noteUncheckAll(){const ta=document.getElementById('note-content-inp');i
 // ─── INIT ────────────────────────────────────────────────────────────────────
 async function initApp(){
   const loadMsg=document.getElementById('loading-msg');
-  if(loadMsg)loadMsg.textContent=_fbReady()?'☁️ Syncing your data...':'⚡ Loading...';
-
-  await _pullFromCloud();
+  if(loadMsg)loadMsg.textContent='⚡ Loading...';
 
   ACCOUNTS=load('cos_accounts',ACCOUNT_DEFAULTS);
   ACTIVE_ACC=load('cos_active_acc',0);
