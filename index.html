@@ -302,7 +302,6 @@ async function cloudDelete(key){
 
 async function _pullFromCloud(){
   if(!_fbReady()){
-    // No Firebase configured — just use localStorage
     _setSyncStatus('synced');
     return;
   }
@@ -311,7 +310,17 @@ async function _pullFromCloud(){
     const res=await fetch(`${FB_URL}/creatorOS.json`);
     if(!res.ok){_setSyncStatus('error');return;}
     const data=await res.json();
-    if(data&&typeof data==='object'){
+    if(data&&typeof data==='object'&&Object.keys(data).length>0){
+      // Clear stale local cache so Firebase data wins
+      try{
+        const keysToRemove=[];
+        for(let i=0;i<localStorage.length;i++){
+          const k=localStorage.key(i);
+          if(k&&k.startsWith('cos_'))keysToRemove.push(k);
+        }
+        keysToRemove.forEach(k=>{delete _mem[k];localStorage.removeItem(k);});
+      }catch{}
+      // Write Firebase data into memory and localStorage
       Object.entries(data).forEach(([k,v])=>{
         if(v!=null){
           _mem[k]=v;
