@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Creator OS — Your Content Empire</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0f1210;--sur:#161d18;--card:#1c2620;--bor:#2a3830;--a1:#e8836a;--a2:#c4614a;--a3:#7ab88a;--a4:#f0b87a;--a5:#a8d4b0;--tx:#f5f0ec;--mu:#7a9080;--dn:#e07060}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--sur)}::-webkit-scrollbar-thumb{background:var(--bor);border-radius:3px}
+input,textarea,select,button{font-family:'DM Sans',sans-serif}button{cursor:pointer}
+
+.shell{display:flex;min-height:100vh}
+
+.sb{width:225px;height:100vh;background:var(--sur);border-right:1px solid var(--bor);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
+.logo{padding:16px;border-bottom:1px solid var(--bor)}
+.logo h1{font-family:'Cormorant Garamond',serif;font-size:20px;background:linear-gradient(135deg,var(--a1),var(--a3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+.logo p{font-size:10px;color:var(--mu);margin-top:2px}
+.autosave{font-size:9px;color:var(--a3);margin-top:4px;transition:color .3s}
+.autosave.syncing{color:var(--a4);animation:pulse 1.5s infinite}
+.autosave.error{color:var(--dn)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+.acc-switch{padding:10px 12px;border-bottom:1px solid var(--bor)}
+.acc-label{font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.acc-current{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--a1)44;border-radius:8px;padding:8px 10px;cursor:pointer;transition:all .15s}
+.acc-current:hover{border-color:var(--a1)88}
+.acc-emoji{font-size:18px}
+.acc-name{font-size:12px;font-weight:600;flex:1}
+.acc-arrow{font-size:10px;color:var(--mu)}
+.acc-dropdown{display:none;background:var(--card);border:1px solid var(--bor);border-radius:8px;margin-top:4px;overflow:hidden}
+.acc-dropdown.open{display:block}
+.acc-option{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;font-size:12px;transition:all .15s;border:none;background:none;width:100%;text-align:left;color:var(--tx)}
+.acc-option:hover{background:var(--sur)}
+.acc-option.active{color:var(--a1)}
+.acc-add{color:var(--a3);font-weight:600}
+.acc-option-wrap{display:flex;align-items:center;gap:0}
+.acc-option-wrap .acc-option{flex:1;min-width:0}
+.acc-del{background:none;border:none;color:var(--mu);font-size:11px;padding:6px 10px;cursor:pointer;opacity:0;transition:all .15s;flex-shrink:0}
+.acc-option-wrap:hover .acc-del{opacity:1}
+.acc-del:hover{color:var(--dn)}
+
+.snav{padding:8px 0;flex:1}
+.ssec{padding:0 9px 5px}
+.sslbl{font-size:9px;font-weight:600;color:var(--mu);letter-spacing:.12em;text-transform:uppercase;padding:6px 7px 2px}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;font-size:12px;font-weight:500;color:var(--mu);transition:all .15s;margin-bottom:1px;border:none;background:none;width:100%;text-align:left;cursor:pointer}
+.ni:hover{background:var(--card);color:var(--tx)}
+.ni.active{background:linear-gradient(135deg,rgba(232,131,106,.13),rgba(122,184,138,.07));color:var(--tx);border:1px solid rgba(232,131,106,.25)}
+.sb-footer{padding:10px;border-top:1px solid var(--bor);font-size:9px;color:var(--mu);text-align:center}
+
+.pomo{padding:10px 12px;border-bottom:1px solid var(--bor);background:linear-gradient(135deg,rgba(232,131,106,.05),rgba(122,184,138,.03))}
+.pomo-hdr{font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center}
+.pomo-bar{height:3px;background:var(--bor);border-radius:99px;overflow:hidden;margin-bottom:6px}
+.pomo-fill{height:100%;background:linear-gradient(90deg,var(--a1),var(--a3));transition:width 1s linear}
+.pomo-time{font-size:30px;font-weight:700;font-family:'Cormorant Garamond',serif;color:var(--a1);text-align:center;line-height:1}
+.pomo-phase{font-size:9px;color:var(--mu);text-align:center;margin-top:2px;margin-bottom:2px}
+.pomo-rounds-txt{font-size:9px;color:var(--a3);text-align:center;margin-bottom:7px}
+.pomo-btns{display:flex;gap:3px;margin-bottom:6px}
+.pomo-btn{flex:1;padding:5px 3px;border-radius:5px;font-size:10px;font-weight:600;border:none;cursor:pointer;transition:all .15s}
+.pomo-go{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff}
+.pomo-sec{background:var(--bor);color:var(--tx)}
+.pomo-cust{font-size:9px;color:var(--mu);cursor:pointer;text-align:center;padding:2px}
+.pomo-cust:hover{color:var(--tx)}
+.pomo-settings{display:none;margin-top:6px}
+.pomo-settings.open{display:block}
+.pomo-row{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:4px}
+.pomo-lbl{font-size:8px;color:var(--mu);display:block;margin-bottom:1px}
+.pomo-inp{background:var(--bg);border:1px solid var(--bor);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;width:100%;outline:none}
+
+.cbox{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--bor);cursor:pointer;flex-shrink:0;background:none;appearance:none;-webkit-appearance:none;transition:all .15s;vertical-align:middle}
+.cbox:checked{background:var(--a3);border-color:var(--a3)}
+.cbox-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(42,56,48,.07)}
+.cbox-row:last-child{border-bottom:none}
+.cbox-label{font-size:11px;flex:1}
+.cbox-label.done{text-decoration:line-through;color:var(--mu)}
+
+.main{margin-left:225px;flex:1;padding:22px 26px;max-width:1120px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ph h2{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;margin-bottom:3px}
+.ph p{font-size:12px;color:var(--mu);margin-bottom:18px}
+.glow{background:linear-gradient(135deg,var(--a1),var(--a3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+.card{background:var(--card);border:1px solid var(--bor);border-radius:10px;padding:14px;margin-bottom:14px}
+.card-title{font-size:10px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.ga{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:18px}
+.sc{background:var(--card);border:1px solid var(--bor);border-radius:10px;padding:14px;transition:transform .2s}
+.sc:hover{transform:translateY(-2px)}
+.stat-val{font-size:22px;font-weight:700;font-family:'Cormorant Garamond',serif;margin:5px 0 2px}
+.stat-lbl{font-size:10px;color:var(--mu)}
+.pb{height:5px;background:var(--bor);border-radius:99px;overflow:hidden;margin:4px 0}
+.pf{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--a1),var(--a3));transition:width .5s}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600}
+.badge{padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{text-align:left;padding:7px 10px;font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--bor);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid rgba(42,56,48,.08);vertical-align:middle}
+tr:hover td{background:rgba(22,29,24,.3)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:7px;font-size:12px;font-weight:600;border:none;transition:all .15s;cursor:pointer}
+.btn-primary{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.btn-ghost{background:rgba(42,56,48,.27);color:var(--tx);border:1px solid var(--bor)}
+.btn-ghost:hover{background:var(--bor)}
+.btn-sm{padding:4px 9px;font-size:11px;border-radius:5px}
+.btn-danger{background:rgba(224,112,96,.11);color:var(--dn);border:1px solid rgba(224,112,96,.17)}
+.inp{background:var(--sur);border:1px solid var(--bor);border-radius:7px;padding:7px 10px;color:var(--tx);font-size:12px;width:100%;outline:none;transition:border-color .15s}
+.inp:focus{border-color:rgba(232,131,106,.5)}
+.inp::placeholder{color:var(--mu)}
+textarea.inp{resize:vertical;min-height:65px;line-height:1.6}
+select.inp{cursor:pointer}
+.fg{margin-bottom:10px}
+.fg label{font-size:10px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;display:block}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.divx{height:1px;background:var(--bor);margin:12px 0}
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(3px);z-index:1000;align-items:center;justify-content:center;padding:16px}
+.ov.open{display:flex}
+.md{background:var(--card);border:1px solid var(--bor);border-radius:13px;width:100%;max-width:620px;max-height:90vh;overflow-y:auto;padding:22px}
+.md.wide{max-width:700px}
+.mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.mh h3{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700}
+.tabs{display:flex;gap:3px;background:var(--sur);padding:3px;border-radius:8px;border:1px solid var(--bor);flex-wrap:wrap;margin-bottom:14px;width:fit-content}
+.tab{padding:5px 11px;border-radius:5px;font-size:11px;font-weight:500;color:var(--mu);cursor:pointer;border:none;background:none;transition:all .15s}
+.tab.active{background:var(--card);color:var(--tx);box-shadow:0 1px 5px rgba(0,0,0,.2)}
+.nc{background:var(--card);border:1px solid var(--bor);border-radius:10px;padding:12px;cursor:pointer;transition:all .2s}
+.nc:hover{transform:translateY(-2px)}
+.bf{background:var(--sur);border:1px solid var(--bor);border-radius:7px;padding:9px 12px;margin-bottom:7px}
+.bfl{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px}
+.empty{text-align:center;padding:32px;color:var(--mu)}
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 220px);min-height:380px}
+.chat-msgs{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;background:var(--sur);border-radius:10px;margin-bottom:10px;border:1px solid var(--bor)}
+.chat-msg{max-width:85%;padding:9px 13px;border-radius:10px;font-size:12px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.chat-msg.user{background:rgba(232,131,106,.13);border:1px solid rgba(232,131,106,.2);align-self:flex-end}
+.chat-msg.ai{background:var(--card);border:1px solid var(--bor);align-self:flex-start}
+.ai-label{font-size:9px;font-weight:700;color:var(--a3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.chat-inp{background:var(--sur);border:1px solid var(--bor);border-radius:8px;padding:9px 11px;color:var(--tx);font-size:12px;flex:1;resize:none;outline:none;min-height:42px;font-family:'DM Sans',sans-serif;line-height:1.5}
+.qb{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:500;border:1px solid rgba(232,131,106,.3);background:rgba(232,131,106,.07);color:var(--a1);cursor:pointer;margin:2px;transition:all .15s}
+.qb:hover{background:rgba(232,131,106,.15)}
+
+.brand-kit-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.color-swatch{width:40px;height:40px;border-radius:8px;border:1px solid var(--bor);cursor:pointer}
+.color-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.pillar-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pillar-box{background:var(--sur);border:1px solid var(--bor);border-radius:8px;padding:10px}
+.pillar-label{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-bottom:4px}
+
+.day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.day-card{background:var(--sur);border:1px solid var(--bor);border-radius:8px;padding:10px}
+.day-num{font-size:10px;font-weight:700;color:var(--a1);margin-bottom:6px}
+
+.task-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(42,56,48,.08)}
+.task-check{width:16px;height:16px;border-radius:4px;border:2px solid var(--bor);cursor:pointer;flex-shrink:0;background:none;appearance:none;-webkit-appearance:none;transition:all .15s;display:inline-block;vertical-align:middle;position:relative}
+.task-check:checked{background:var(--a3);border-color:var(--a3)}
+.task-check:checked::after{content:'';position:absolute;left:4px;top:1px;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg)}
+.checklist-item{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid rgba(42,56,48,.07)}
+.checklist-item:last-child{border-bottom:none}
+.checklist-label{font-size:12px;flex:1;cursor:pointer;padding-top:1px;line-height:1.4}
+.checklist-label.done{text-decoration:line-through;color:var(--mu)}
+.priority-badge{padding:1px 7px;border-radius:99px;font-size:9px;font-weight:700}
+
+.fin-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(42,56,48,.08);font-size:12px}
+.fin-amount{font-weight:700;font-family:'Cormorant Garamond',serif;font-size:16px}
+
+.platform-row{display:grid;grid-template-columns:120px 1fr 1fr 80px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(42,56,48,.08);font-size:11px}
+
+@media(max-width:820px){.g2,.g3{grid-template-columns:1fr}.main{padding:12px}.sb{width:190px}.main{margin-left:190px}}
+</style>
+</head>
+<body>
+<div id="loading-overlay" style="position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;transition:opacity .4s">
+  <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;background:linear-gradient(135deg,var(--a1),var(--a3));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Creator OS</div>
+  <div style="font-size:11px;color:var(--mu)" id="loading-msg">☁️ Syncing your data...</div>
+</div>
+<div class="shell">
+  <div class="sb">
+    <div class="logo">
+      <h1>Creator OS</h1>
+      <p id="logo-sub">Your Content Empire</p>
+      <div class="autosave" id="sync-status">☁️ Synced</div>
+    </div>
+
+    <div class="pomo">
+      <div class="pomo-hdr"><span>⏱️ Pomodoro</span><span id="pomo-dots">🍅</span></div>
+      <div class="pomo-bar"><div class="pomo-fill" id="pomo-bar" style="width:100%"></div></div>
+      <div class="pomo-time" id="pomo-time">25:00</div>
+      <div class="pomo-phase" id="pomo-phase">Work Session 💪</div>
+      <div class="pomo-rounds-txt" id="pomo-rounds">Round 1 of 4</div>
+      <div class="pomo-btns">
+        <button class="pomo-btn pomo-go" id="pomo-play" onclick="pomoToggle()">&#9654; Start</button>
+        <button class="pomo-btn pomo-sec" onclick="pomoSkip()">&#9197; Skip</button>
+        <button class="pomo-btn pomo-sec" onclick="pomoReset()">&#8635; Reset</button>
+      </div>
+      <div class="pomo-cust" onclick="document.getElementById('pomo-panel').classList.toggle('open')">&#9881;&#65039; Customize Timer</div>
+      <div class="pomo-settings" id="pomo-panel">
+        <div class="pomo-row">
+          <div><span class="pomo-lbl">Work (min)</span><input class="pomo-inp" type="number" id="pw" value="25" min="1" max="90" onchange="pomoUpdate()"/></div>
+          <div><span class="pomo-lbl">Short Break</span><input class="pomo-inp" type="number" id="psb" value="5" min="1" max="30" onchange="pomoUpdate()"/></div>
+        </div>
+        <div class="pomo-row">
+          <div><span class="pomo-lbl">Long Break</span><input class="pomo-inp" type="number" id="plb" value="15" min="1" max="60" onchange="pomoUpdate()"/></div>
+          <div><span class="pomo-lbl">Rounds</span><input class="pomo-inp" type="number" id="prd" value="4" min="1" max="8" onchange="pomoUpdate()"/></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc-switch">
+      <div class="acc-label">Active Account</div>
+      <div class="acc-current" onclick="toggleAccDropdown()">
+        <span class="acc-emoji" id="acc-emoji">📱</span>
+        <span class="acc-name" id="acc-name">My Account</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-dropdown" id="acc-dropdown">
+        <div style="height:1px;background:var(--bor);margin:4px 0"></div>
+        <button class="acc-option acc-add" onclick="addNewAccount()">➕ Add New Account</button>
+      </div>
+    </div>
+
+    <nav class="snav" id="sidebar-nav"></nav>
+    <div class="sb-footer">Creator OS v4.1 · Firebase Sync</div>
+  </div>
+
+  <main class="main" id="main-content"></main>
+</div>
+
+<div class="ov" id="modal-bg">
+  <div class="md" id="modal-box">
+    <div class="mh">
+      <h3 id="modal-title"></h3>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ─── FIREBASE CONFIG ──────────────────────────────────────────────────────────
+// ★ PASTE YOUR FIREBASE DATABASE URL BELOW (from Firebase Console)
+// It looks like: https://your-project-name-default-rtdb.firebaseio.com
+const FB_URL = 'https://creator-os-2ff31-default-rtdb.firebaseio.com';
+// ─────────────────────────────────────────────────────────────────────────────
+
+const _mem={};
+const _saveQueue=new Map();
+let _saveTimer=null;
+
+function _fbReady(){return FB_URL&&!FB_URL.includes('PASTE_YOUR');}
+
+function load(key,def){
+  if(key in _mem){try{return JSON.parse(_mem[key]);}catch{return def;}}
+  try{const v=localStorage.getItem(key);if(v!=null){_mem[key]=v;return JSON.parse(v);}}catch{}
+  return def;
+}
+
+function save(key,val){
+  try{
+    const json=JSON.stringify(val);
+    _mem[key]=json;
+    try{localStorage.setItem(key,json);}catch{}
+    _saveQueue.set(key,json);
+    if(!_saveTimer)_saveTimer=setTimeout(_flushSaves,800);
+  }catch(e){console.warn('Save failed:',e);}
+}
+
+async function _flushSaves(){
+  _saveTimer=null;
+  if(!_fbReady())return;
+  const entries=[..._saveQueue.entries()];
+  _saveQueue.clear();
+  _setSyncStatus('syncing');
+  try{
+    await Promise.all(entries.map(([k,v])=>
+      fetch(`${FB_URL}/creatorOS/${k}.json`,{
+        method:'PUT',
+        headers:{'Content-Type':'application/json'},
+        body:v
+      }).catch(()=>{})
+    ));
+    _setSyncStatus('synced');
+  }catch(e){
+    console.warn('Cloud save failed:',e);
+    _setSyncStatus('error');
+  }
+}
+
+function _setSyncStatus(s){
+  const el=document.getElementById('sync-status');
+  if(!el)return;
+  el.className='autosave'+(s==='syncing'?' syncing':s==='error'?' error':'');
+  el.textContent=s==='syncing'?'☁️ Syncing...':s==='error'?'⚠️ Sync error — check Firebase URL':'☁️ Synced across devices';
+}
+
+async function cloudDelete(key){
+  delete _mem[key];
+  try{localStorage.removeItem(key);}catch{}
+  if(!_fbReady())return;
+  try{await fetch(`${FB_URL}/creatorOS/${key}.json`,{method:'DELETE'});}catch(e){}
+}
+
+async function _pullFromCloud(){
+  if(!_fbReady()){
+    _setSyncStatus('synced');
+    return;
+  }
+  try{
+    _setSyncStatus('syncing');
+    const res=await fetch(`${FB_URL}/creatorOS.json`);
+    if(!res.ok){_setSyncStatus('error');return;}
+    const data=await res.json();
+    if(data&&typeof data==='object'&&Object.keys(data).length>0){
+      // Merge Firebase data on top of local data — never clear local data
+      Object.entries(data).forEach(([k,v])=>{
+        if(v!=null){
+          _mem[k]=v;
+          try{localStorage.setItem(k,v);}catch{}
+        }
+      });
+    }
+    _setSyncStatus('synced');
+  }catch(e){
+    console.warn('Cloud pull failed:',e);
+    _setSyncStatus('error');
+  }
+}
+
+// ─── ACCOUNTS ────────────────────────────────────────────────────────────────
+const ACCOUNT_DEFAULTS = [
+  {
+    id:'seat1a', name:'The Crew Lounge', handle:'@seat1a', emoji:'✈️',
+    niche:'Faceless flight attendant storytelling — blurs fiction and reality',
+    voice:'Witty, warm, mysterious, cinematic. Never desperate. Always in control.',
+    audience:'Women 22-38, travel lovers, aspiring FAs, drama fans',
+    mission:'To entertain, educate, and inspire through cinematic faceless storytelling.',
+    colors:['#e8836a','#7ab88a','#f0b87a','#a8d4b0','#c4614a','#0f1210'],
+    hashtags:'#flightattendant #cabincrew #storytime #facelesscreator #fyp',
+    posting:'TikTok: 5-7x/week · Reels: 3-4x/week · Shorts: 2x/week',
+    pillars:[
+      {name:'Storytelling',desc:'Cinematic fiction, drama, cliffhangers',color:'#e8836a',emoji:'🎭'},
+      {name:'Education',desc:'Tips, facts, insider knowledge',color:'#7ab88a',emoji:'💡'},
+      {name:'Behind Scenes',desc:'Day in the life, process',color:'#a8d4b0',emoji:'🎬'},
+      {name:'Monetization',desc:'CTAs, product plugs',color:'#f0b87a',emoji:'💰'},
+      {name:'Community',desc:'Q&A, engagement, trends',color:'#c4614a',emoji:'🤝'},
+    ],
+    agentSys:'You are the AI Content Agent for "The Crew Lounge" (@seat1a) — a faceless TikTok/Instagram brand. Niche: Faceless flight attendant storytelling. Voice: Witty, warm, mysterious, cinematic. Never desperate. Always in control. Write viral hooks, scripts, captions, content plans. Always match The Crew Lounge voice.',
+  },
+  {
+    id:'continuum', name:'Continuum Valley', handle:'@continuumvalley', emoji:'🌿',
+    niche:'Community movement — produce market, franchise blueprint, feeding families in need',
+    voice:'Warm, purposeful, inspiring, community-driven. Building something bigger than yourself.',
+    audience:'Community builders, social impact followers, local families, entrepreneurs',
+    mission:'To build a self-sustaining community ecosystem — a produce market, resource hub, and franchise blueprint that feeds and uplifts those in need.',
+    colors:['#7ab88a','#a8d4b0','#f0b87a','#e8836a','#2a3830','#0f1210'],
+    hashtags:'#communitybuilding #socialimpact #continuumvalley #foodjustice #communityfirst',
+    posting:'TikTok: 3-4x/week · Instagram: 4-5x/week · YouTube: 1x/week',
+    pillars:[
+      {name:'Community Impact',desc:'Stories of change, feeding families',color:'#7ab88a',emoji:'🌱'},
+      {name:'Behind the Build',desc:'Construction, planning, progress',color:'#a8d4b0',emoji:'🏗️'},
+      {name:'Education',desc:'How to start a community movement',color:'#f0b87a',emoji:'📚'},
+      {name:'Fundraising',desc:'Donation drives, goals, milestones',color:'#e8836a',emoji:'💚'},
+      {name:'Vision Casting',desc:'The franchise blueprint, future plans',color:'#c4614a',emoji:'🔮'},
+    ],
+    agentSys:'You are the AI Content Agent for "Continuum Valley" — a community movement brand. Building a produce market and resource hub that will become a franchise blueprint to feed families in need. Voice: Warm, purposeful, inspiring. Write content that moves people to action and builds community.',
+  },
+  {
+    id:'everythingseat', name:'The Everything Seat', handle:'@theeverythingseat', emoji:'🎙️',
+    niche:'Self-help & growth podcast — covering everything from mindset to business to healing',
+    voice:'Real, raw, empowering, conversational. No filter, no fluff. Everything on the table.',
+    audience:'Women 25-45 seeking growth, entrepreneurs, people navigating life transitions',
+    mission:'To create a safe, powerful space where every topic gets a seat at the table — mental health, business, relationships, spirituality, and everything in between.',
+    colors:['#c084fc','#f472b6','#7ab88a','#f0b87a','#60a5fa','#0f1210'],
+    hashtags:'#podcast #selfhelp #personalgrowth #mindset #theeverythingseat #womenempowerment',
+    posting:'Podcast: 1-2x/week · TikTok clips: 3-5x/week · Instagram: 4x/week',
+    pillars:[
+      {name:'Mindset & Growth',desc:'Mental health, mindset shifts, healing',color:'#c084fc',emoji:'🧠'},
+      {name:'Business & Money',desc:'Entrepreneurship, income, strategy',color:'#7ab88a',emoji:'💼'},
+      {name:'Relationships',desc:'Love, friendship, boundaries, family',color:'#f472b6',emoji:'❤️'},
+      {name:'Spirituality',desc:'Faith, purpose, energy, manifestation',color:'#f0b87a',emoji:'✨'},
+      {name:'Real Talk',desc:'Raw stories, interviews, hot topics',color:'#60a5fa',emoji:'🎤'},
+    ],
+    agentSys:'You are the AI Content Agent for "The Everything Seat" — a self-help and growth podcast brand. Covers mindset, business, relationships, spirituality, and healing. Voice: Real, raw, empowering, conversational. No filter, no fluff. Write podcast episode ideas, show notes, social clips, and growth content.',
+  },
+];
+
+let ACCOUNTS = load('cos_accounts', ACCOUNT_DEFAULTS);
+let ACTIVE_ACC = load('cos_active_acc', 0);
+
+function getAcc(){return ACCOUNTS[ACTIVE_ACC]||ACCOUNTS[0];}
+function accKey(k){return `cos_${getAcc().id}_${k}`;}
+
+function switchAccount(idx){
+  ACTIVE_ACC=idx;save('cos_active_acc',idx);
+  const acc=getAcc();
+  document.getElementById('acc-emoji').textContent=acc.emoji;
+  document.getElementById('acc-name').textContent=acc.name;
+  document.getElementById('acc-dropdown').classList.remove('open');
+  const logoSub2=document.getElementById('logo-sub');
+  if(logoSub2)logoSub2.textContent=acc.name+' · Creator OS';
+  rebuildDropdown();
+  renderNav();renderPage();
+}
+function toggleAccDropdown(){document.getElementById('acc-dropdown').classList.toggle('open');}
+function addNewAccount(){
+  const name=prompt('Account name?');if(!name)return;
+  const emoji=prompt('Emoji for this account?','📱')||'📱';
+  const handle=prompt('Handle? (e.g. @myaccount)','')||'';
+  const newAcc={
+    id:'acc_'+Date.now(),name,handle,emoji,
+    niche:'',voice:'',audience:'',mission:'',
+    colors:['#e8836a','#7ab88a','#f0b87a','#a8d4b0'],
+    hashtags:'',posting:'',pillars:[],
+    agentSys:`You are an AI Content Agent for "${name}" — a social media brand. Help create content, write captions, hooks, and grow this brand.`,
+  };
+  ACCOUNTS.push(newAcc);save('cos_accounts',ACCOUNTS);
+  switchAccount(ACCOUNTS.length-1);
+}
+
+function deleteAccount(idx){
+  if(ACCOUNTS.length<=1){alert('You must have at least one account.');return;}
+  const acc=ACCOUNTS[idx];
+  if(!confirm(`Delete "${acc.name}"? All data for this account will be removed.`))return;
+  const prefix='cos_'+acc.id+'_';
+  const keysToRemove=new Set();
+  Object.keys(_mem).forEach(k=>{if(k.startsWith(prefix))keysToRemove.add(k);});
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(prefix))keysToRemove.add(k);}}catch{}
+  keysToRemove.forEach(k=>{cloudDelete(k);});
+  ACCOUNTS.splice(idx,1);
+  save('cos_accounts',ACCOUNTS);
+  if(ACTIVE_ACC>=ACCOUNTS.length)ACTIVE_ACC=ACCOUNTS.length-1;
+  else if(idx<ACTIVE_ACC)ACTIVE_ACC--;
+  else if(idx===ACTIVE_ACC)ACTIVE_ACC=Math.min(ACTIVE_ACC,ACCOUNTS.length-1);
+  save('cos_active_acc',ACTIVE_ACC);
+  const a=getAcc();
+  document.getElementById('acc-emoji').textContent=a.emoji;
+  document.getElementById('acc-name').textContent=a.name;
+  const logoSub2=document.getElementById('logo-sub');
+  if(logoSub2)logoSub2.textContent=a.name+' · Creator OS';
+  rebuildDropdown();
+  renderNav();renderPage();
+}
+
+function rebuildDropdown(){
+  const dd=document.getElementById('acc-dropdown');
+  dd.innerHTML='';
+  ACCOUNTS.forEach((a,i)=>{
+    const wrap=document.createElement('div');
+    wrap.className='acc-option-wrap';
+    const btn=document.createElement('button');
+    btn.className='acc-option'+(i===ACTIVE_ACC?' active':'');
+    btn.textContent=`${a.emoji} ${a.name}`;
+    btn.onclick=()=>switchAccount(i);
+    wrap.appendChild(btn);
+    const del=document.createElement('button');
+    del.className='acc-del';
+    del.textContent='✕';
+    del.title='Delete account';
+    del.onclick=(e)=>{e.stopPropagation();deleteAccount(i);};
+    wrap.appendChild(del);
+    dd.appendChild(wrap);
+  });
+  const div=document.createElement('div');div.style='height:1px;background:var(--bor);margin:4px 0';dd.appendChild(div);
+  const addBtn=document.createElement('button');addBtn.className='acc-option acc-add';addBtn.textContent='➕ Add New Account';addBtn.onclick=addNewAccount;dd.appendChild(addBtn);
+}
+
+// ─── NAV ─────────────────────────────────────────────────────────────────────
+const NAV=[
+  {s:'Overview',items:[{id:'dashboard',ic:'✦',l:'Dashboard'},{id:'brandid',ic:'🎨',l:'Brand Identity'},{id:'goals',ic:'🎯',l:'Goals'}]},
+  {s:'Content',items:[{id:'planner',ic:'📝',l:'Content Planner'},{id:'thirtyDay',ic:'📅',l:'30-Day Content Plan'},{id:'calendar',ic:'🗓️',l:'Calendar'},{id:'scripts',ic:'🎬',l:'Script Library'},{id:'hashtags',ic:'#️⃣',l:'Hashtag Vault'}]},
+  {s:'Tracking',items:[{id:'tasks',ic:'✅',l:'Task Tracker'},{id:'analytics',ic:'📊',l:'Content Analytics'},{id:'platform',ic:'📈',l:'Platform Analytics'}]},
+  {s:'Monetize',items:[{id:'products',ic:'💰',l:'Products & Offers'},{id:'affiliates',ic:'🔗',l:'Affiliates'},{id:'deals',ic:'🤝',l:'Brand Deals'},{id:'finance',ic:'💵',l:'Finance Hub'},{id:'collab',ic:'👥',l:'Collab Tracker'}]},
+  {s:'Tools',items:[{id:'agent',ic:'🤖',l:'AI Agent'},{id:'notes',ic:'📓',l:'Brain Dump Notes'}]},
+];
+
+function renderNav(){
+  document.getElementById('sidebar-nav').innerHTML=NAV.map(sec=>`
+    <div class="ssec">
+      <div class="sslbl">${sec.s}</div>
+      ${sec.items.map(i=>`<button class="ni${STATE.page===i.id?' active':''}" onclick="goTo('${i.id}')"><span style="font-size:13px">${i.ic}</span>${i.l}</button>`).join('')}
+    </div>
+  `).join('');
+}
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let STATE={page:'dashboard',plannerFilter:'All'};
+
+function goTo(page){STATE.page=page;renderNav();renderPage();}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function uid(){return Date.now()+Math.random().toString(36).slice(2);}
+function pct(c,t){return Math.min(100,Math.round((c/t)*100));}
+function fmt(n){if(!n&&n!==0)return'—';if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'K';return String(n);}
+function fd(n){if(!n&&n!==0)return'—';return'$'+Number(n).toLocaleString();}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function sc(s){return{Idea:'#7a9080',Scripting:'#e8836a',Filming:'#c4614a',Editing:'#f0b87a',Scheduled:'#7ab88a',Published:'#a8d4b0',Repurposed:'#d4c4a8'}[s]||'#888';}
+function loadA(k,def){return load(accKey(k),def);}
+function saveA(k,val){save(accKey(k),val);}
+
+// ─── DATA DEFAULTS ───────────────────────────────────────────────────────────
+const DEF_POSTS=[{id:1,title:'First Post',pillar:0,platform:'TikTok',status:'Idea',hook:'',caption:'',hashtags:'',cta:'',date:'',views:'',likes:'',comments:'',shares:'',monetize:'',revenue:'',notes:''}];
+const DEF_GOALS=[{id:1,label:'Followers',current:0,target:10000,unit:'followers',emoji:'🎯',platform:'TikTok',deadline:'2025-12-31'},{id:2,label:'Monthly Revenue',current:0,target:5000,unit:'$',emoji:'💸',platform:'All',deadline:'2025-12-31'}];
+const DEF_TASKS=[{id:1,name:'Set up content calendar',desc:'Plan out first 30 days',status:'To Do',priority:'High',due:'',progress:0,notes:''}];
+const DEF_SCRIPTS=[{id:1,title:'First Script',pillar:'',tags:'',hook:'Your opening hook here...',body:'[SOUND]\n\nVO: Your script here...',cta:'Follow for more!',notes:''}];
+const DEF_HASHTAGS=[{id:1,group:'Main',tags:'',notes:''}];
+const DEF_PRODS=[{id:1,name:'First Product',type:'Digital Product',price:27,platform:'Gumroad',status:'In Progress',sales:0,revenue:0,description:''}];
+const DEF_AFF=[{id:1,name:'Amazon Associates',niche:'General',comm:'4-8%',status:'Pending',clicks:0,conv:0,rev:0,notes:''}];
+const DEF_DEALS=[{id:1,brand:'First Brand',type:'Gifted',value:0,status:'Outreach',deliverables:'',deadline:'',contact:'',notes:''}];
+const DEF_REV=[{id:1,date:'',source:'',type:'Digital Product',amount:0,notes:''}];
+const DEF_NOTES=[{id:1,title:'Brain Dump',tags:[],color:'#e8836a',pinned:true,content:'Add your ideas here...',date:new Date().toISOString().slice(0,10)}];
+const DEF_ANALYTICS=[{id:1,title:'',date:'',platform:'TikTok',likes:0,views:0,comments:0,shares:0}];
+const DEF_PLATFORM=[{platform:'TikTok',current:0,goal:10000,trend:''},{platform:'Instagram',current:0,goal:5000,trend:''},{platform:'YouTube',current:0,goal:1000,trend:''},{platform:'Facebook',current:0,goal:2000,trend:''},{platform:'Pinterest',current:0,goal:3000,trend:''}];
+const DEF_COLLABS=[{id:1,username:'',platform1:'',platform2:'',sent1:false,sent2:false,sent3:false,product:'',followers:'',category:'',notes:''}];
+const DEF_FINANCE={income:[],expenses:[],budget_income:0,budget_expenses:0};
+const DEF_THIRTY=Array.from({length:30},(_,i)=>({day:i+1,title:'',pillar:'',format:'',status:'',platform:'',caption:'',cta:'',hashtags:'',notes:''}));
+const DEF_BRAND_EXTRA={logo_desc:'',tagline:'',typography_heading:'',typography_body:'',image_style:''};
+
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+function openModal(title,html,wide){
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-body').innerHTML=html;
+  document.getElementById('modal-box').className='md'+(wide?' wide':'');
+  document.getElementById('modal-bg').classList.add('open');
+}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+document.getElementById('modal-bg').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+// ─── RENDER PAGE ─────────────────────────────────────────────────────────────
+function renderPage(){
+  const pages={dashboard:renderDashboard,brandid:renderBrandIdentity,goals:renderGoals,planner:renderPlanner,thirtyDay:renderThirtyDay,calendar:renderCalendar,scripts:renderScripts,hashtags:renderHashtags,tasks:renderTasks,analytics:renderAnalytics,platform:renderPlatform,products:renderProducts,affiliates:renderAffiliates,deals:renderDeals,finance:renderFinance,collab:renderCollab,agent:renderAgent,notes:renderNotes};
+  document.getElementById('main-content').innerHTML=(pages[STATE.page]||(() =>'<div class="empty"><p>Coming soon!</p></div>'))();
+  if(STATE.page==='agent')initAgent();
+}
+
+// ─── DASHBOARD ───────────────────────────────────────────────────────────────
+function renderDashboard(){
+  const acc=getAcc();
+  const posts=loadA('posts',DEF_POSTS);
+  const prods=loadA('prods',DEF_PRODS);
+  const goals=loadA('goals',DEF_GOALS);
+  const rev=prods.reduce((s,p)=>s+(Number(p.revenue)||0),0);
+  const pub=posts.filter(p=>p.status==='Published').length;
+  return`
+    <div class="ph">
+      <h2>${(()=>{const h=new Date().getHours();return h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Good night';})()} <span class="glow">${esc(acc.name)}</span> ${acc.emoji}</h2>
+      <p>${acc.name} · ${acc.handle} · All data syncs across devices</p>
+    </div>
+    ${!_fbReady()?`<div style="background:rgba(240,184,122,.1);border:1px solid rgba(240,184,122,.3);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:11px;color:var(--a4)">⚠️ <strong>Firebase not connected yet</strong> — data saves locally only. See the setup guide to enable cross-device sync.</div>`:''}
+    <div class="sg">
+      ${[{e:'📱',v:posts.length,l:'Posts Tracked',c:'#e8836a'},{e:'💰',v:fd(rev),l:'Revenue',c:'#7ab88a'},{e:'✅',v:pub,l:'Published',c:'#a8d4b0'},{e:'📅',v:posts.filter(p=>p.status==='Scheduled').length,l:'Scheduled',c:'#f0b87a'},{e:'✍️',v:posts.filter(p=>['Idea','Scripting'].includes(p.status)).length,l:'Pipeline',c:'#c4614a'},{e:'📦',v:prods.filter(p=>p.status==='Live').length,l:'Live Products',c:'#f0b87a'}].map(s=>`
+        <div class="sc" style="border-color:${s.c}28">
+          <div style="font-size:18px;margin-bottom:5px">${s.e}</div>
+          <div class="stat-val" style="color:${s.c}">${esc(s.v)}</div>
+          <div class="stat-lbl">${s.l}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title">Recent Posts</div>
+        ${posts.slice(0,5).map(p=>`
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(42,56,48,.08)">
+            <div style="flex:1;min-width:0">
+              <div style="font-size:11px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.title)||'Untitled'}</div>
+              <div style="font-size:10px;color:var(--mu)">${esc(p.platform)} · ${p.date||'No date'}</div>
+            </div>
+            <span class="badge" style="background:${sc(p.status)}20;color:${sc(p.status)}">${p.status}</span>
+          </div>
+        `).join('')}
+        <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="goTo('planner')">View All →</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Goals Progress</div>
+        ${goals.map(g=>`
+          <div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+              <span style="font-size:11px">${g.emoji} ${esc(g.label)}</span>
+              <span style="font-size:11px;font-weight:700;color:var(--a1)">${pct(g.current,g.target)}%</span>
+            </div>
+            <div class="pb"><div class="pf" style="width:${pct(g.current,g.target)}%"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--mu)">
+              <span>${g.unit==='$'?fd(g.current):fmt(g.current)+' '+g.unit}</span>
+              <span>/ ${g.unit==='$'?fd(g.target):fmt(g.target)+' '+g.unit}</span>
+            </div>
+          </div>
+        `).join('')}
+        <button class="btn btn-ghost btn-sm" onclick="goTo('goals')">Edit Goals →</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Brand at a Glance</div>
+      <div class="g3" style="margin-bottom:0">
+        <div><div style="font-size:9px;color:var(--mu);text-transform:uppercase;margin-bottom:3px">Niche</div><div style="font-size:11px">${esc(acc.niche)||'Not set'}</div></div>
+        <div><div style="font-size:9px;color:var(--mu);text-transform:uppercase;margin-bottom:3px">Voice</div><div style="font-size:11px">${esc(acc.voice)||'Not set'}</div></div>
+        <div><div style="font-size:9px;color:var(--mu);text-transform:uppercase;margin-bottom:3px">Audience</div><div style="font-size:11px">${esc(acc.audience)||'Not set'}</div></div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── BRAND IDENTITY ──────────────────────────────────────────────────────────
+function renderBrandIdentity(){
+  const acc=getAcc();
+  const extra=loadA('brand_extra',DEF_BRAND_EXTRA);
+  const editing=STATE.editingBrand;
+  if(editing){
+    return`
+      <div class="ph"><h2>Brand Identity</h2><p>Edit your complete brand kit.</p></div>
+      <div class="card">
+        <div class="card-title">Brand Kit</div>
+        <div class="fr">
+          <div class="fg"><label>Brand Name</label><input class="inp" id="bi-name" value="${esc(acc.name)}"/></div>
+          <div class="fg"><label>Handle</label><input class="inp" id="bi-handle" value="${esc(acc.handle)}"/></div>
+        </div>
+        <div class="fg"><label>Tagline</label><input class="inp" id="bi-tagline" value="${esc(extra.tagline||'')}"/></div>
+        <div class="fg"><label>Logo / Description</label><textarea class="inp" id="bi-logo">${esc(extra.logo_desc||'')}</textarea></div>
+        <div class="fg"><label>Typography — Headings</label><input class="inp" id="bi-typo-h" value="${esc(extra.typography_heading||'')}"/></div>
+        <div class="fg"><label>Typography — Body</label><input class="inp" id="bi-typo-b" value="${esc(extra.typography_body||'')}"/></div>
+        <div class="fg"><label>Image Style / Aesthetic</label><textarea class="inp" id="bi-imgstyle">${esc(extra.image_style||'')}</textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Mission & Vision</div>
+        <div class="fr">
+          <div class="fg"><label>Mission</label><textarea class="inp" id="bi-mission">${esc(acc.mission||'')}</textarea></div>
+          <div class="fg"><label>Vision</label><textarea class="inp" id="bi-vision">${esc(extra.vision||'')}</textarea></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Brand Personality</div>
+        <div class="fg"><label>Voice & Tone</label><textarea class="inp" id="bi-voice">${esc(acc.voice||'')}</textarea></div>
+        <div class="fg"><label>Target Audience</label><textarea class="inp" id="bi-audience">${esc(acc.audience||'')}</textarea></div>
+        <div class="fg"><label>Core Hashtags</label><textarea class="inp" id="bi-hashtags">${esc(acc.hashtags||'')}</textarea></div>
+        <div class="fg"><label>Posting Cadence</label><input class="inp" id="bi-posting" value="${esc(acc.posting||'')}"/></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Content Pillars</div>
+        ${acc.pillars.map((p,i)=>`
+          <div style="background:var(--sur);border:1px solid var(--bor);border-radius:8px;padding:10px;margin-bottom:8px">
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+              <input class="inp" style="width:52px;text-align:center" placeholder="🎭" id="pillar-emoji-${i}" value="${esc(p.emoji||'')}"/>
+              <input class="inp" style="flex:1" placeholder="Pillar name" id="pillar-name-${i}" value="${esc(p.name||'')}"/>
+              <input type="color" value="${p.color||'#e8836a'}" id="pillar-color-${i}" style="width:36px;height:36px;border:1px solid var(--bor);border-radius:6px;cursor:pointer;padding:2px;background:var(--sur)"/>
+              <button onclick="removePillar(${i})" style="background:rgba(224,112,96,.1);color:var(--dn);border:1px solid rgba(224,112,96,.2);border-radius:5px;padding:4px 9px;font-size:11px;cursor:pointer;flex-shrink:0">✕</button>
+            </div>
+            <input class="inp" placeholder="Short description" id="pillar-desc-${i}" value="${esc(p.desc||'')}"/>
+          </div>
+        `).join('')}
+        <button class="btn btn-ghost btn-sm" onclick="addPillar()" style="margin-top:4px">+ Add Pillar</button>
+      </div>
+      <div style="display:flex;gap:9px">
+        <button class="btn btn-primary" onclick="saveBrandIdentity()">Save Brand Identity</button>
+        <button class="btn btn-ghost" onclick="STATE.editingBrand=false;renderPage()">Cancel</button>
+      </div>
+    `;
+  }
+  return`
+    <div class="ph"><h2>Brand Identity</h2><p>${acc.name} · ${acc.handle}</p></div>
+    <button class="btn btn-primary" style="margin-bottom:14px" onclick="STATE.editingBrand=true;renderPage()">✏️ Edit Brand Identity</button>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title">Brand Kit</div>
+        ${[['Brand Name',acc.name],['Handle',acc.handle],['Tagline',extra.tagline],['Logo Description',extra.logo_desc],['Heading Font',extra.typography_heading],['Body Font',extra.typography_body],['Image Style',extra.image_style]].map(([l,v])=>`<div class="bf"><div class="bfl">${l}</div><div style="font-size:11px;color:var(--tx)">${esc(v)||'<span style="color:var(--mu);font-style:italic">Not set</span>'}</div></div>`).join('')}
+        <div class="card-title" style="margin-top:10px">Color Palette</div>
+        <div class="color-row">${acc.colors.map(c=>`<div class="color-swatch" style="background:${c}" title="${c}"></div>`).join('')}</div>
+        ${imgUploadBtn('brand_logo','Brand Logo / Banner Image')}
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-title">Mission & Vision</div>
+          <div class="bf"><div class="bfl">Mission</div><div style="font-size:11px">${esc(acc.mission)||'Not set'}</div></div>
+          <div class="bf"><div class="bfl">Vision</div><div style="font-size:11px">${esc(extra.vision)||'Not set'}</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Brand Personality</div>
+          ${[['Voice & Tone',acc.voice],['Target Audience',acc.audience],['Hashtags',acc.hashtags],['Posting Cadence',acc.posting]].map(([l,v])=>`<div class="bf"><div class="bfl">${l}</div><div style="font-size:11px">${esc(v)||'Not set'}</div></div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Content Pillars</div>
+      <div class="pillar-grid">
+        ${acc.pillars.map((p,i)=>`
+          <div class="pillar-box" style="border-color:${p.color}44">
+            <div class="pillar-label">Pillar ${i+1}</div>
+            <div style="font-size:13px;font-weight:600;color:${p.color}">${p.emoji} ${esc(p.name)}</div>
+            <div style="font-size:10px;color:var(--mu);margin-top:2px">${esc(p.desc)}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+function saveBrandIdentity(){
+  const acc=getAcc();
+  acc.name=document.getElementById('bi-name')?.value||acc.name;
+  acc.handle=document.getElementById('bi-handle')?.value||acc.handle;
+  acc.mission=document.getElementById('bi-mission')?.value||acc.mission;
+  acc.voice=document.getElementById('bi-voice')?.value||acc.voice;
+  acc.audience=document.getElementById('bi-audience')?.value||acc.audience;
+  acc.hashtags=document.getElementById('bi-hashtags')?.value||acc.hashtags;
+  acc.posting=document.getElementById('bi-posting')?.value||acc.posting;
+  const newPillars=[];let pi=0;
+  while(document.getElementById('pillar-name-'+pi)){
+    newPillars.push({name:document.getElementById('pillar-name-'+pi)?.value||'',desc:document.getElementById('pillar-desc-'+pi)?.value||'',emoji:document.getElementById('pillar-emoji-'+pi)?.value||'',color:document.getElementById('pillar-color-'+pi)?.value||'#e8836a'});
+    pi++;
+  }
+  acc.pillars=newPillars;
+  ACCOUNTS[ACTIVE_ACC]=acc;save('cos_accounts',ACCOUNTS);
+  const extra={tagline:document.getElementById('bi-tagline')?.value||'',logo_desc:document.getElementById('bi-logo')?.value||'',typography_heading:document.getElementById('bi-typo-h')?.value||'',typography_body:document.getElementById('bi-typo-b')?.value||'',image_style:document.getElementById('bi-imgstyle')?.value||'',vision:document.getElementById('bi-vision')?.value||''};
+  saveA('brand_extra',extra);
+  STATE.editingBrand=false;
+  document.getElementById('acc-name').textContent=acc.name;
+  document.getElementById('acc-emoji').textContent=acc.emoji;
+  renderPage();
+}
+function _collectPillars(){const cur=[];let i=0;while(document.getElementById('pillar-name-'+i)){cur.push({name:document.getElementById('pillar-name-'+i)?.value||'',desc:document.getElementById('pillar-desc-'+i)?.value||'',emoji:document.getElementById('pillar-emoji-'+i)?.value||'',color:document.getElementById('pillar-color-'+i)?.value||'#e8836a'});i++;}return cur;}
+function addPillar(){const acc=getAcc();acc.pillars=[..._collectPillars(),{name:'',desc:'',emoji:'✨',color:'#e8836a'}];ACCOUNTS[ACTIVE_ACC]=acc;save('cos_accounts',ACCOUNTS);renderPage();}
+function removePillar(idx){const acc=getAcc();const cur=_collectPillars();cur.splice(idx,1);acc.pillars=cur;ACCOUNTS[ACTIVE_ACC]=acc;save('cos_accounts',ACCOUNTS);renderPage();}
+
+// ─── GOALS ───────────────────────────────────────────────────────────────────
+function renderGoals(){
+  const goals=loadA('goals',DEF_GOALS);
+  return`
+    <div class="ph"><h2>Goals & Metrics</h2><p>Platform milestones — auto-saved.</p></div>
+    <button class="btn btn-primary" style="margin-bottom:14px" onclick="openGoalModal()">+ Add Goal</button>
+    <div class="ga">
+      ${goals.map(g=>`
+        <div class="card" style="border-color:var(--a1)28;margin-bottom:0">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:9px">
+            <span style="font-size:22px">${g.emoji}</span>
+            <div>
+              <div style="font-size:12px;font-weight:600">${esc(g.label)}</div>
+              <div style="font-size:10px;color:var(--mu)">${esc(g.platform||'')} · ${g.deadline?'Due: '+g.deadline:'No deadline'}</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <div style="font-size:20px;font-weight:700;font-family:'Cormorant Garamond',serif;color:var(--a1)">${g.unit==='$'?fd(g.current):fmt(g.current)}</div>
+            <div style="text-align:right"><div style="font-size:10px;color:var(--mu)">of ${g.unit==='$'?fd(g.target):fmt(g.target)+' '+g.unit}</div><div style="font-weight:700;color:var(--a3)">${pct(g.current,g.target)}%</div></div>
+          </div>
+          <div class="pb"><div class="pf" style="width:${pct(g.current,g.target)}%"></div></div>
+          <div style="display:flex;gap:6px;margin-top:9px">
+            <button class="btn btn-ghost btn-sm" onclick="openGoalModal('${g.id}')">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteGoal('${g.id}')">Delete</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+function openGoalModal(id){
+  const goals=loadA('goals',DEF_GOALS);
+  const g=id?goals.find(x=>x.id==id):{label:'',current:0,target:10000,unit:'followers',emoji:'🎯',platform:'TikTok',deadline:''};
+  const plats=['TikTok','Instagram','YouTube','Facebook','Pinterest','All'];
+  openModal(id?'Edit Goal':'Add Goal',`
+    <div class="fr"><div class="fg"><label>Emoji</label><input class="inp" id="g-emoji" value="${esc(g.emoji)}"/></div><div class="fg"><label>Label</label><input class="inp" id="g-label" value="${esc(g.label)}"/></div></div>
+    <div class="fr"><div class="fg"><label>Current</label><input class="inp" type="number" id="g-current" value="${g.current}"/></div><div class="fg"><label>Target</label><input class="inp" type="number" id="g-target" value="${g.target}"/></div></div>
+    <div class="fr"><div class="fg"><label>Unit</label><input class="inp" id="g-unit" value="${esc(g.unit)}" placeholder="followers / $"/></div><div class="fg"><label>Platform</label><select class="inp" id="g-platform">${plats.map(p=>`<option${(g.platform||'')=== p?' selected':''}>${p}</option>`).join('')}</select></div></div>
+    <div class="fg"><label>Deadline</label><input class="inp" type="date" id="g-deadline" value="${g.deadline||''}"/></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="saveGoal('${id||''}')">Save</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>
+  `);
+}
+function saveGoal(id){
+  const goals=loadA('goals',DEF_GOALS);
+  const g={id:id||uid(),label:document.getElementById('g-label').value,current:Number(document.getElementById('g-current').value),target:Number(document.getElementById('g-target').value),unit:document.getElementById('g-unit').value,emoji:document.getElementById('g-emoji').value,platform:document.getElementById('g-platform').value,deadline:document.getElementById('g-deadline').value};
+  if(id)saveA('goals',goals.map(x=>x.id==id?g:x));else{goals.push(g);saveA('goals',goals);}
+  closeModal();renderPage();
+}
+function deleteGoal(id){const goals=loadA('goals',DEF_GOALS);saveA('goals',goals.filter(x=>x.id!=id));renderPage();}
+
+// ─── CONTENT PLANNER ─────────────────────────────────────────────────────────
+function renderPlanner(){
+  const posts=loadA('posts',DEF_POSTS);
+  const acc=getAcc();
+  const filter=STATE.plannerFilter||'All';
+  const stats=['All','Idea','Scripting','Filming','Editing','Scheduled','Published','Repurposed'];
+  const list=filter==='All'?posts:posts.filter(p=>p.status===filter);
+  return`
+    <div class="ph"><h2>Content Planner</h2><p>${acc.name} · Every post tracked — auto-saved.</p></div>
+    <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+      <button class="btn btn-primary" onclick="openPostModal()">+ New Post</button>
+      <div class="tabs">${stats.map(s=>`<button class="tab${filter===s?' active':''}" onclick="setFilter('${s}')">${s}</button>`).join('')}</div>
+    </div>
+    <div class="card" style="padding:0"><div class="tw"><table>
+      <thead><tr><th>✓</th><th>Title</th><th>Pillar</th><th>Platform</th><th>Status</th><th>Date</th><th>Views</th><th>Likes</th><th>Monetize</th><th></th></tr></thead>
+      <tbody>
+        ${list.length===0?`<tr><td colspan="9" style="text-align:center;color:var(--mu);padding:24px">No posts yet!</td></tr>`:''}
+        ${list.map(p=>{
+          const pl=acc.pillars[p.pillar];
+          return`<tr>
+            <td><input type="checkbox" class="task-check" ${p.done?'checked':''} onchange="togglePostDone('${p.id}',this.checked)"/></td>
+            <td><div style="font-weight:600;font-size:11px;${p.done?'text-decoration:line-through;opacity:.6':''}">${esc(p.title)||'Untitled'}</div>${p.hook?`<div style="font-size:9px;color:var(--mu);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.hook)}</div>`:''}</td>
+            <td>${pl?`<span class="tag" style="background:${pl.color}20;color:${pl.color}">${pl.emoji} ${esc(pl.name)}</span>`:''}</td>
+            <td style="font-size:10px">${esc(p.platform)}</td>
+            <td><span class="badge" style="background:${sc(p.status)}20;color:${sc(p.status)}">${p.status}</span></td>
+            <td style="font-size:10px;color:var(--mu)">${p.date||'—'}</td>
+            <td style="font-weight:600;color:var(--a3);font-size:10px">${p.views||'—'}</td>
+            <td style="font-size:10px">${p.likes||'—'}</td>
+            <td>${p.monetize?`<span class="tag" style="background:var(--a4)20;color:var(--a4);font-size:9px">${esc(p.monetize)}</span>`:'—'}</td>
+            <td><div style="display:flex;gap:4px">
+              <button class="btn btn-ghost btn-sm" onclick="openPostModal('${p.id}')">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deletePost('${p.id}')">✕</button>
+            </div></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table></div></div>
+  `;
+}
+function setFilter(f){STATE.plannerFilter=f;renderPage();}
+function openPostModal(id){
+  const posts=loadA('posts',DEF_POSTS);
+  const acc=getAcc();
+  const p=id?posts.find(x=>x.id==id):{title:'',pillar:0,platform:'TikTok',status:'Idea',hook:'',caption:'',hashtags:acc.hashtags||'',cta:'',date:'',views:'',likes:'',comments:'',shares:'',monetize:'',revenue:'',notes:''};
+  const plats=['TikTok','Instagram Reels','YouTube Shorts','Pinterest','Facebook','Podcast'];
+  const stats=['Idea','Scripting','Filming','Editing','Scheduled','Published','Repurposed'];
+  const mt=['','Digital Product','Affiliate Link','Brand Deal','Course','Coaching','Membership','Merch','Services'];
+  openModal(id?'Edit Post':'New Post',`
+    <div class="fg"><label>Title</label><input class="inp" id="p-title" value="${esc(p.title)}"/></div>
+    <div class="fr">
+      <div class="fg"><label>Pillar</label><select class="inp" id="p-pillar"><option value="">None</option>${acc.pillars.map((pl,i)=>`<option value="${i}"${p.pillar===i?' selected':''}>${pl.emoji} ${pl.name}</option>`).join('')}</select></div>
+      <div class="fg"><label>Platform</label><select class="inp" id="p-platform">${plats.map(pl=>`<option${p.platform===pl?' selected':''}>${pl}</option>`).join('')}</select></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Status</label><select class="inp" id="p-status">${stats.map(s=>`<option${p.status===s?' selected':''}>${s}</option>`).join('')}</select></div>
+      <div class="fg"><label>Date</label><input class="inp" type="date" id="p-date" value="${p.date||''}"/></div>
+    </div>
+    <div class="fg"><label>Hook</label><input class="inp" id="p-hook" value="${esc(p.hook)}" placeholder="First words they see..."/></div>
+    <div class="fg"><label>Caption</label><textarea class="inp" id="p-caption">${esc(p.caption)}</textarea></div>
+    <div class="fr"><div class="fg"><label>Hashtags</label><input class="inp" id="p-hashtags" value="${esc(p.hashtags)}"/></div><div class="fg"><label>CTA</label><input class="inp" id="p-cta" value="${esc(p.cta)}"/></div></div>
+    <div class="divx"></div>
+    <div style="font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-bottom:8px">📊 Analytics</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+      ${['views','likes','comments','shares'].map(k=>`<div><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">${k}</label><input class="inp" id="p-${k}" value="${esc(p[k])}" placeholder="0"/></div>`).join('')}
+    </div>
+    <div class="divx"></div>
+    <div style="font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-bottom:8px">💰 Monetization</div>
+    <div class="fr">
+      <div class="fg"><label>Type</label><select class="inp" id="p-monetize">${mt.map(m=>`<option${p.monetize===m?' selected':''}>${m}</option>`).join('')}</select></div>
+      <div class="fg"><label>Revenue ($)</label><input class="inp" type="number" id="p-revenue" value="${p.revenue||''}"/></div>
+    </div>
+    <div class="fg"><label>Notes</label><textarea class="inp" id="p-notes" style="min-height:45px">${esc(p.notes)}</textarea></div>
+    ${imgUploadBtn('post_img_'+(id||'new'),'Post Image / Thumbnail')}
+    <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" onclick="savePost('${id||''}')">Save Post</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>
+  `,true);
+}
+function savePost(id){
+  const posts=loadA('posts',DEF_POSTS);
+  const g=k=>document.getElementById('p-'+k)?.value||'';
+  const p={id:id||uid(),title:g('title'),pillar:Number(g('pillar')),platform:g('platform'),status:g('status'),hook:g('hook'),caption:g('caption'),hashtags:g('hashtags'),cta:g('cta'),date:g('date'),views:g('views'),likes:g('likes'),comments:g('comments'),shares:g('shares'),monetize:g('monetize'),revenue:g('revenue'),notes:g('notes')};
+  if(id)saveA('posts',posts.map(x=>x.id==id?p:x));else{posts.push(p);saveA('posts',posts);}
+  closeModal();renderPage();
+}
+function deletePost(id){const posts=loadA('posts',DEF_POSTS);saveA('posts',posts.filter(x=>x.id!=id));renderPage();}
+function togglePostDone(id,done){const posts=loadA('posts',DEF_POSTS);saveA('posts',posts.map(p=>p.id==id?{...p,done}:p));renderPage();}
+
+// ─── 30-DAY CONTENT PLAN ─────────────────────────────────────────────────────
+function renderThirtyDay(){
+  const plan=loadA('thirty_day',DEF_THIRTY);
+  const acc=getAcc();
+  const plats=['TikTok','Instagram Reels','YouTube Shorts','Pinterest','Facebook'];
+  const stats=['','Idea','Scripting','Filming','Editing','Scheduled','Published'];
+  return`
+    <div class="ph"><h2>30-Day Content Plan</h2><p>Plan your entire month of content in one place — auto-saved.</p></div>
+    <div class="day-grid">
+      ${plan.map((d,i)=>`
+        <div class="day-card" style="border-color:${d.done?'var(--a3)44':d.status==='Published'?'var(--a3)33':d.status?'var(--a1)22':'var(--bor)'}">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
+            <input type="checkbox" class="task-check" ${d.done?'checked':''} onchange="updateDay(${i},'done',this.checked)"/>
+            <div class="day-num" style="margin-bottom:0;${d.done?'text-decoration:line-through;opacity:.5':''}">Day ${d.day}</div>
+          </div>
+          <div class="fg" style="margin-bottom:6px"><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Title</label><input class="inp" value="${esc(d.title)}" style="font-size:11px;padding:4px 7px" onchange="updateDay(${i},'title',this.value)"/></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px">
+            <div><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Pillar</label><select class="inp" style="font-size:10px;padding:3px 6px" onchange="updateDay(${i},'pillar',this.value)"><option value="">—</option>${acc.pillars.map(p=>`<option${d.pillar===p.name?' selected':''}>${p.emoji} ${p.name}</option>`).join('')}</select></div>
+            <div><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Status</label><select class="inp" style="font-size:10px;padding:3px 6px" onchange="updateDay(${i},'status',this.value)">${stats.map(s=>`<option${d.status===s?' selected':''}>${s}</option>`).join('')}</select></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px">
+            <div><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Platform</label><select class="inp" style="font-size:10px;padding:3px 6px" onchange="updateDay(${i},'platform',this.value)"><option value="">—</option>${plats.map(p=>`<option${d.platform===p?' selected':''}>${p}</option>`).join('')}</select></div>
+            <div><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Format</label><input class="inp" value="${esc(d.format)}" style="font-size:10px;padding:3px 6px" placeholder="Video/Carousel" onchange="updateDay(${i},'format',this.value)"/></div>
+          </div>
+          <div class="fg" style="margin-bottom:4px"><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Caption/Notes</label><textarea class="inp" style="min-height:45px;font-size:10px;padding:4px 7px" onchange="updateDay(${i},'notes',this.value)">${esc(d.notes)}</textarea></div>
+          ${imgUploadBtn('day_img_'+i,'Day Image')}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+function updateDay(i,field,val){
+  const plan=loadA('thirty_day',DEF_THIRTY);
+  plan[i][field]=val;saveA('thirty_day',plan);
+}
+
+// ─── CALENDAR ────────────────────────────────────────────────────────────────
+function renderCalendar(){
+  const posts=loadA('posts',DEF_POSTS);
+  const acc=getAcc();
+  const now=new Date();
+  const mo=STATE.calMo!==undefined?STATE.calMo:now.getMonth();
+  const yr=STATE.calYr||now.getFullYear();
+  const MNS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DNS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const fd2=new Date(yr,mo,1).getDay();
+  const dim=new Date(yr,mo+1,0).getDate();
+  const cells=Array(fd2).fill(null).concat(Array.from({length:dim},(_,i)=>i+1));
+  while(cells.length%7!==0)cells.push(null);
+  return`
+    <div class="ph"><h2>Content Calendar</h2><p>Your posting schedule at a glance.</p></div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+      <button class="btn btn-ghost btn-sm" onclick="calNav(-1)">← Prev</button>
+      <span style="font-size:16px;font-weight:700;font-family:'Cormorant Garamond',serif">${MNS[mo]} ${yr}</span>
+      <button class="btn btn-ghost btn-sm" onclick="calNav(1)">Next →</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px">${DNS.map(d=>`<div style="text-align:center;font-size:9px;font-weight:700;color:var(--mu);padding:3px">${d}</div>`).join('')}</div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px">
+      ${cells.map(d=>{
+        if(!d)return'<div style="min-height:66px;border-radius:6px"></div>';
+        const ds=`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const dps=posts.filter(p=>p.date===ds);
+        const isT=d===now.getDate()&&mo===now.getMonth()&&yr===now.getFullYear();
+        return`<div style="min-height:66px;background:var(--sur);border:1px solid ${isT?'var(--a1)':'var(--bor)'};border-radius:6px;padding:4px">
+          <div style="font-size:9px;font-weight:700;color:${isT?'var(--a1)':'var(--mu)'};margin-bottom:2px">${d}</div>
+          ${dps.map(p=>{const pl=acc.pillars[p.pillar];return`<div style="font-size:8px;padding:1px 3px;border-radius:3px;margin-bottom:1px;background:${(pl?.color||'#e8836a')}20;color:${pl?.color||'#e8836a'};overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${pl?.emoji||''} ${esc(p.title||'Post')}</div>`;}).join('')}
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+function calNav(dir){let mo=STATE.calMo!==undefined?STATE.calMo:new Date().getMonth();let yr=STATE.calYr||new Date().getFullYear();mo+=dir;if(mo<0){mo=11;yr--;}if(mo>11){mo=0;yr++;}STATE.calMo=mo;STATE.calYr=yr;renderPage();}
+
+// ─── SCRIPTS ─────────────────────────────────────────────────────────────────
+function renderScripts(){
+  const scripts=loadA('scripts',DEF_SCRIPTS);
+  return`
+    <div class="ph"><h2>Script Library</h2><p>Every script organized — auto-saved.</p></div>
+    <button class="btn btn-primary" style="margin-bottom:14px" onclick="openScriptModal()">+ New Script</button>
+    <div class="ga">
+      ${scripts.map(s=>`
+        <div class="card" style="cursor:pointer;margin-bottom:0" onclick="viewScript('${s.id}')">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span class="tag" style="background:var(--a1)20;color:var(--a1)">${esc(s.pillar||'Untagged')}</span>
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">
+              <input type="checkbox" class="task-check" ${s.done?'checked':''} onclick="event.stopPropagation()" onchange="toggleScriptDone('${s.id}',this.checked)" title="Mark complete"/>
+              <span style="font-size:9px;color:var(--mu)">${s.done?'✓ Done':'Mark done'}</span>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openScriptModal('${s.id}')">Edit</button>
+          </div>
+          <div style="font-weight:700;font-size:13px;margin-bottom:3px">${esc(s.title)}</div>
+          <div style="font-size:10px;color:var(--mu);font-style:italic">"${esc(s.hook)}"</div>
+          ${s.tags?`<div style="margin-top:6px;display:flex;gap:3px;flex-wrap:wrap">${s.tags.split(',').map(t=>`<span class="tag" style="background:var(--a3)20;color:var(--a3);font-size:9px">${esc(t.trim())}</span>`).join('')}</div>`:''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+function viewScript(id){const scripts=loadA('scripts',DEF_SCRIPTS);const s=scripts.find(x=>x.id==id);if(!s)return;openModal(esc(s.title),`<div style="background:var(--sur);border-radius:8px;padding:14px"><div style="font-size:9px;color:var(--mu);text-transform:uppercase;margin-bottom:4px">HOOK</div><div style="font-size:12px;font-style:italic;color:var(--a1);margin-bottom:10px">"${esc(s.hook)}"</div><div style="font-size:9px;color:var(--mu);text-transform:uppercase;margin-bottom:4px">SCRIPT</div><div style="font-size:11px;line-height:1.75;white-space:pre-wrap">${esc(s.body)}</div>${s.cta?`<div style="font-size:9px;color:var(--mu);text-transform:uppercase;margin-top:10px;margin-bottom:3px">CTA</div><div style="font-size:11px;color:var(--a3)">${esc(s.cta)}</div>`:''}</div>`,true);}
+function openScriptModal(id){const scripts=loadA('scripts',DEF_SCRIPTS);const s=id?scripts.find(x=>x.id==id):{title:'',pillar:'',tags:'',hook:'',body:'',cta:'',notes:''};openModal(id?'Edit Script':'New Script',`<div class="fr"><div class="fg"><label>Title</label><input class="inp" id="sc-title" value="${esc(s.title)}"/></div><div class="fg"><label>Pillar</label><input class="inp" id="sc-pillar" value="${esc(s.pillar)}"/></div></div><div class="fg"><label>Tags</label><input class="inp" id="sc-tags" value="${esc(s.tags)}"/></div><div class="fg"><label>Hook</label><input class="inp" id="sc-hook" value="${esc(s.hook)}"/></div><div class="fg"><label>Full Script</label><textarea class="inp" id="sc-body" style="min-height:160px;font-family:monospace;font-size:11px">${esc(s.body)}</textarea></div><div class="fr"><div class="fg"><label>CTA</label><input class="inp" id="sc-cta" value="${esc(s.cta)}"/></div><div class="fg"><label>Notes</label><input class="inp" id="sc-notes" value="${esc(s.notes)}"/></div></div><div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="saveScript('${id||''}')">Save</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>`,true);}
+function saveScript(id){const scripts=loadA('scripts',DEF_SCRIPTS);const g=k=>document.getElementById('sc-'+k)?.value||'';const s={id:id||uid(),title:g('title'),pillar:g('pillar'),tags:g('tags'),hook:g('hook'),body:g('body'),cta:g('cta'),notes:g('notes')};if(id)saveA('scripts',scripts.map(x=>x.id==id?s:x));else{scripts.push(s);saveA('scripts',scripts);}closeModal();renderPage();}
+
+// ─── HASHTAG VAULT ────────────────────────────────────────────────────────────
+function renderHashtags(){
+  const hts=loadA('hashtags',DEF_HASHTAGS);
+  return`
+    <div class="ph"><h2>Hashtag Vault</h2><p>Organize your hashtag groups — auto-saved.</p></div>
+    <button class="btn btn-primary" style="margin-bottom:14px" onclick="openHashtagModal()">+ New Group</button>
+    <div class="ga">
+      ${hts.map(h=>`
+        <div class="card" style="margin-bottom:0">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <div style="font-weight:600;font-size:13px">${esc(h.group)}</div>
+            <div style="display:flex;gap:5px">
+              <button class="btn btn-ghost btn-sm" onclick="copyHashtags('${h.id}')">Copy</button>
+              <button class="btn btn-ghost btn-sm" onclick="openHashtagModal('${h.id}')">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteHashtag('${h.id}')">✕</button>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--a1);line-height:1.8;word-break:break-all">${esc(h.tags)}</div>
+          ${h.notes?`<div style="font-size:10px;color:var(--mu);margin-top:8px">📝 ${esc(h.notes)}</div>`:''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+function openHashtagModal(id){const hts=loadA('hashtags',DEF_HASHTAGS);const h=id?hts.find(x=>x.id==id):{group:'',tags:'',notes:''};openModal(id?'Edit Group':'New Hashtag Group',`<div class="fg"><label>Group Name</label><input class="inp" id="ht-group" value="${esc(h.group)}" placeholder="e.g. Main, Niche, Trending"/></div><div class="fg"><label>Hashtags</label><textarea class="inp" id="ht-tags" style="min-height:100px">${esc(h.tags)}</textarea></div><div class="fg"><label>Notes</label><input class="inp" id="ht-notes" value="${esc(h.notes)}"/></div><div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="saveHashtag('${id||''}')">Save</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function saveHashtag(id){const hts=loadA('hashtags',DEF_HASHTAGS);const h={id:id||uid(),group:document.getElementById('ht-group').value,tags:document.getElementById('ht-tags').value,notes:document.getElementById('ht-notes').value};if(id)saveA('hashtags',hts.map(x=>x.id==id?h:x));else{hts.push(h);saveA('hashtags',hts);}closeModal();renderPage();}
+function deleteHashtag(id){const hts=loadA('hashtags',DEF_HASHTAGS);saveA('hashtags',hts.filter(x=>x.id!=id));renderPage();}
+function copyHashtags(id){const hts=loadA('hashtags',DEF_HASHTAGS);const h=hts.find(x=>x.id==id);if(h)navigator.clipboard?.writeText(h.tags).then(()=>alert('Hashtags copied!'));}
+
+// ─── TASK TRACKER ────────────────────────────────────────────────────────────
+function renderTasks(){
+  const tasks=loadA('tasks',DEF_TASKS);
+  const done=tasks.filter(t=>t.status==='Done').length;
+  const prioColors={High:'#e07060',Medium:'#f0b87a',Low:'#7ab88a','Very Low':'#7a9080'};
+  return`
+    <div class="ph"><h2>Task Tracker</h2><p>${done}/${tasks.length} tasks completed — auto-saved.</p></div>
+    <div style="display:flex;gap:9px;align-items:center;margin-bottom:14px">
+      <button class="btn btn-primary" onclick="openTaskModal()">+ Add Task</button>
+      <div style="font-size:12px;color:var(--mu)">Overall: <strong style="color:var(--a3)">${tasks.length?Math.round(done/tasks.length*100):0}%</strong> complete</div>
+    </div>
+    <div class="card" style="padding:0"><div class="tw"><table>
+      <thead><tr><th>✓</th><th>Task</th><th>Status</th><th>Priority</th><th>Due Date</th><th>Progress</th><th>Notes</th><th></th></tr></thead>
+      <tbody>
+        ${tasks.length===0?`<tr><td colspan="8" style="text-align:center;color:var(--mu);padding:20px">No tasks yet!</td></tr>`:''}
+        ${tasks.map(t=>`<tr>
+          <td><input type="checkbox" class="task-check" ${t.status==='Done'?'checked':''} onchange="toggleTask('${t.id}',this.checked)"/></td>
+          <td><div style="font-weight:600;font-size:11px;${t.status==='Done'?'text-decoration:line-through;color:var(--mu)':''}">${esc(t.name)}</div><div style="font-size:9px;color:var(--mu)">${esc(t.desc||'')}</div></td>
+          <td><span class="badge" style="background:${t.status==='Done'?'var(--a3)20':'var(--a4)20'};color:${t.status==='Done'?'var(--a3)':'var(--a4)'}">${t.status}</span></td>
+          <td><span class="priority-badge" style="background:${(prioColors[t.priority]||'#888')}20;color:${prioColors[t.priority]||'#888'}">${t.priority}</span></td>
+          <td style="font-size:10px;color:var(--mu)">${t.due||'—'}</td>
+          <td><div style="display:flex;align-items:center;gap:6px;min-width:80px"><div class="pb" style="flex:1;margin:0"><div class="pf" style="width:${t.progress||0}%"></div></div><span style="font-size:9px;color:var(--mu)">${t.progress||0}%</span></div></td>
+          <td style="font-size:10px;color:var(--mu);max-width:120px">${esc(t.notes||'')}</td>
+          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openTaskModal('${t.id}')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteTask('${t.id}')">✕</button></div></td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div></div>
+  `;
+}
+function toggleTask(id,done){const tasks=loadA('tasks',DEF_TASKS);saveA('tasks',tasks.map(t=>t.id==id?{...t,status:done?'Done':'To Do',progress:done?100:t.progress}:t));renderPage();}
+function openTaskModal(id){
+  const tasks=loadA('tasks',DEF_TASKS);
+  const t=id?tasks.find(x=>x.id==id):{name:'',desc:'',status:'To Do',priority:'Medium',due:'',progress:0,notes:''};
+  const stats=['To Do','In Progress','Done','On Hold'];
+  const prios=['Very High','High','Medium','Low','Very Low'];
+  openModal(id?'Edit Task':'Add Task',`
+    <div class="fg"><label>Task Name</label><input class="inp" id="tk-name" value="${esc(t.name)}"/></div>
+    <div class="fg"><label>Description</label><textarea class="inp" id="tk-desc" style="min-height:50px">${esc(t.desc||'')}</textarea></div>
+    <div class="fr"><div class="fg"><label>Status</label><select class="inp" id="tk-status">${stats.map(s=>`<option${t.status===s?' selected':''}>${s}</option>`).join('')}</select></div><div class="fg"><label>Priority</label><select class="inp" id="tk-priority">${prios.map(p=>`<option${t.priority===p?' selected':''}>${p}</option>`).join('')}</select></div></div>
+    <div class="fr"><div class="fg"><label>Due Date</label><input class="inp" type="date" id="tk-due" value="${t.due||''}"/></div><div class="fg"><label>Progress %</label><input class="inp" type="number" id="tk-progress" value="${t.progress||0}" min="0" max="100"/></div></div>
+    <div class="fg"><label>Notes</label><textarea class="inp" id="tk-notes" style="min-height:45px">${esc(t.notes||'')}</textarea></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="saveTask('${id||''}')">Save</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>
+  `);
+}
+function saveTask(id){const tasks=loadA('tasks',DEF_TASKS);const g=k=>document.getElementById('tk-'+k)?.value||'';const t={id:id||uid(),name:g('name'),desc:g('desc'),status:g('status'),priority:g('priority'),due:g('due'),progress:Number(g('progress')),notes:g('notes')};if(id)saveA('tasks',tasks.map(x=>x.id==id?t:x));else{tasks.push(t);saveA('tasks',tasks);}closeModal();renderPage();}
+function deleteTask(id){const tasks=loadA('tasks',DEF_TASKS);saveA('tasks',tasks.filter(x=>x.id!=id));renderPage();}
+
+// ─── CONTENT ANALYTICS ───────────────────────────────────────────────────────
+function renderAnalytics(){
+  const data=loadA('analytics',DEF_ANALYTICS);
+  const totLikes=data.reduce((s,d)=>s+(Number(d.likes)||0),0);
+  const totViews=data.reduce((s,d)=>s+(Number(d.views)||0),0);
+  return`
+    <div class="ph"><h2>Content Analytics</h2><p>Track likes & views per post — auto-saved.</p></div>
+    <div class="g3" style="margin-bottom:14px">
+      <div class="sc" style="border-color:var(--a1)28"><div style="font-size:16px;margin-bottom:4px">❤️</div><div class="stat-val" style="color:var(--a1)">${fmt(totLikes)}</div><div class="stat-lbl">Total Likes</div></div>
+      <div class="sc" style="border-color:var(--a3)28"><div style="font-size:16px;margin-bottom:4px">👁️</div><div class="stat-val" style="color:var(--a3)">${fmt(totViews)}</div><div class="stat-lbl">Total Views</div></div>
+      <div class="sc" style="border-color:var(--a4)28"><div style="font-size:16px;margin-bottom:4px">📊</div><div class="stat-val" style="color:var(--a4)">${data.filter(d=>d.title).length}</div><div class="stat-lbl">Posts Tracked</div></div>
+    </div>
+    <button class="btn btn-primary" style="margin-bottom:14px" onclick="openAnalyticsModal()">+ Add Entry</button>
+    <div class="card" style="padding:0"><div class="tw"><table>
+      <thead><tr><th>Title</th><th>Date</th><th>Platform</th><th>Likes</th><th>Views</th><th>Comments</th><th>Shares</th><th></th></tr></thead>
+      <tbody>
+        ${data.length===0?`<tr><td colspan="8" style="text-align:center;color:var(--mu);padding:20px">No entries yet!</td></tr>`:''}
+        ${data.filter(d=>d.title).map(d=>`<tr>
+          <td style="font-weight:600;font-size:11px">${esc(d.title)}</td>
+          <td style="font-size:10px;color:var(--mu)">${d.date||'—'}</td>
+          <td><span class="badge" style="background:var(--a4)20;color:var(--a4);font-size:9px">${esc(d.platform)}</span></td>
+          <td style="font-weight:600;color:var(--a1);font-size:11px">${fmt(d.likes)}</td>
+          <td style="font-weight:600;color:var(--a3);font-size:11px">${fmt(d.views)}</td>
+          <td style="font-size:10px">${fmt(d.comments)}</td>
+          <td style="font-size:10px">${fmt(d.shares)}</td>
+          <td><button class="btn btn-danger btn-sm" onclick="deleteAnalytic('${d.id}')">✕</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div></div>
+  `;
+}
+function openAnalyticsModal(){
+  const plats=['TikTok','Instagram','YouTube','Facebook','Pinterest'];
+  openModal('Add Analytics Entry',`
+    <div class="fg"><label>Post Title</label><input class="inp" id="an-title" placeholder="Post title..."/></div>
+    <div class="fr"><div class="fg"><label>Date</label><input class="inp" type="date" id="an-date"/></div><div class="fg"><label>Platform</label><select class="inp" id="an-platform">${plats.map(p=>`<option>${p}</option>`).join('')}</select></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+      ${['likes','views','comments','shares'].map(k=>`<div><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">${k}</label><input class="inp" type="number" id="an-${k}" value="0"/></div>`).join('')}
+    </div>
+    <div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="saveAnalytic()">Save</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>
+  `);
+}
+function saveAnalytic(){
+  const data=loadA('analytics',DEF_ANALYTICS);
+  const g=k=>document.getElementById('an-'+k)?.value||'';
+  const d={id:uid(),title:g('title'),date:g('date'),platform:g('platform'),likes:Number(g('likes')),views:Number(g('views')),comments:Number(g('comments')),shares:Number(g('shares'))};
+  data.push(d);saveA('analytics',data);closeModal();renderPage();
+}
+function deleteAnalytic(id){const data=loadA('analytics',DEF_ANALYTICS);saveA('analytics',data.filter(x=>x.id!=id));renderPage();}
+
+// ─── PLATFORM ANALYTICS ──────────────────────────────────────────────────────
+function renderPlatform(){
+  const data=loadA('platform',DEF_PLATFORM);
+  return`
+    <div class="ph"><h2>Platform Analytics</h2><p>Track growth across every platform — auto-saved.</p></div>
+    <div class="card" style="padding:0"><div class="tw"><table>
+      <thead><tr><th>Platform</th><th>Current Followers</th><th>Goal</th><th>Progress</th><th>Trend</th><th>Notes</th></tr></thead>
+      <tbody>
+        ${data.map((p,i)=>`<tr>
+          <td style="font-weight:600;font-size:12px">${esc(p.platform)}</td>
+          <td><input class="inp" type="number" value="${p.current}" style="width:100px;padding:3px 7px;font-size:11px" onchange="updatePlatform(${i},'current',this.value)"/></td>
+          <td><input class="inp" type="number" value="${p.goal}" style="width:100px;padding:3px 7px;font-size:11px" onchange="updatePlatform(${i},'goal',this.value)"/></td>
+          <td style="min-width:120px">
+            <div style="display:flex;align-items:center;gap:6px">
+              <div class="pb" style="flex:1;margin:0"><div class="pf" style="width:${pct(p.current,p.goal)}%"></div></div>
+              <span style="font-size:10px;font-weight:700;color:var(--a1)">${pct(p.current,p.goal)}%</span>
+            </div>
+          </td>
+          <td><input class="inp" value="${esc(p.trend||'')}" style="width:80px;padding:3px 7px;font-size:11px" placeholder="↑ ↓ →" onchange="updatePlatform(${i},'trend',this.value)"/></td>
+          <td><input class="inp" value="${esc(p.notes||'')}" style="width:120px;padding:3px 7px;font-size:11px" onchange="updatePlatform(${i},'notes',this.value)"/></td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div></div>
+  `;
+}
+function updatePlatform(i,field,val){const data=loadA('platform',DEF_PLATFORM);data[i][field]=isNaN(Number(val))||field==='trend'||field==='notes'?val:Number(val);saveA('platform',data);if(field==='current'||field==='goal')renderPage();}
+
+// ─── PRODUCTS ────────────────────────────────────────────────────────────────
+function renderProducts(){
+  const prods=loadA('prods',DEF_PRODS);
+  const total=prods.reduce((s,p)=>s+(p.revenue||0),0);
+  return`
+    <div class="ph"><h2>Products & Offers</h2><p>Every income stream — auto-saved.</p></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:22px;font-weight:700;color:var(--a3);font-family:'Cormorant Garamond',serif">${fd(total)} <span style="font-size:11px;color:var(--mu);font-weight:400">total revenue</span></div>
+      <button class="btn btn-primary" onclick="openProdModal()">+ New Product</button>
+    </div>
+    <div class="ga">
+      ${prods.map(p=>`
+        <div class="card" style="border-color:${p.status==='Live'?'var(--a3)38':'var(--bor)'};margin-bottom:0">
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px">
+            <span class="tag" style="background:var(--a4)20;color:var(--a4)">${esc(p.type)}</span>
+            <span class="badge" style="background:${p.status==='Live'?'var(--a3)20':'var(--bor)'};color:${p.status==='Live'?'var(--a3)':'var(--mu)'}">${p.status}</span>
+          </div>
+          <div style="font-weight:700;font-size:13px;margin-bottom:2px">${esc(p.name)}</div>
+          <div style="font-size:10px;color:var(--mu);margin-bottom:9px">${esc(p.description)}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:9px">
+            ${[['Price',fd(p.price)],['Sales',fmt(p.sales)],['Revenue',fd(p.revenue)]].map(([l,v])=>`<div style="text-align:center;background:var(--sur);border-radius:5px;padding:5px"><div style="font-size:13px;font-weight:700;color:var(--a3);font-family:'Cormorant Garamond',serif">${v}</div><div style="font-size:8px;color:var(--mu)">${l}</div></div>`).join('')}
+          </div>
+          <div style="display:flex;gap:5px">
+            <button class="btn btn-ghost btn-sm" onclick="openProdModal('${p.id}')">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteProd('${p.id}')">Delete</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+function openProdModal(id){const prods=loadA('prods',DEF_PRODS);const p=id?prods.find(x=>x.id==id):{name:'',type:'Digital Product',price:'',platform:'',status:'In Progress',sales:0,revenue:0,description:''};const mt=['Digital Product','Affiliate Link','Brand Deal','Course','Coaching','Membership','Merch','Services'];const sts=['Idea','In Progress','Live','Paused','Retired'];openModal(id?'Edit Product':'New Product',`<div class="fg"><label>Name</label><input class="inp" id="pr-name" value="${esc(p.name)}"/></div><div class="fr"><div class="fg"><label>Type</label><select class="inp" id="pr-type">${mt.map(m=>`<option${p.type===m?' selected':''}>${m}</option>`).join('')}</select></div><div class="fg"><label>Status</label><select class="inp" id="pr-status">${sts.map(s=>`<option${p.status===s?' selected':''}>${s}</option>`).join('')}</select></div></div><div class="fg"><label>Description</label><textarea class="inp" id="pr-desc" style="min-height:45px">${esc(p.description)}</textarea></div><div class="fr"><div class="fg"><label>Price ($)</label><input class="inp" type="number" id="pr-price" value="${p.price}"/></div><div class="fg"><label>Platform</label><input class="inp" id="pr-platform" value="${esc(p.platform)}"/></div></div><div class="fr"><div class="fg"><label>Sales</label><input class="inp" type="number" id="pr-sales" value="${p.sales}"/></div><div class="fg"><label>Revenue ($)</label><input class="inp" type="number" id="pr-revenue" value="${p.revenue}"/></div></div><div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="saveProd('${id||''}')">Save</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function saveProd(id){const prods=loadA('prods',DEF_PRODS);const g=k=>document.getElementById('pr-'+k)?.value||'';const p={id:id||uid(),name:g('name'),type:g('type'),status:g('status'),description:g('desc'),price:Number(g('price')),platform:g('platform'),sales:Number(g('sales')),revenue:Number(g('revenue'))};if(id)saveA('prods',prods.map(x=>x.id==id?p:x));else{prods.push(p);saveA('prods',prods);}closeModal();renderPage();}
+function deleteProd(id){const prods=loadA('prods',DEF_PRODS);saveA('prods',prods.filter(x=>x.id!=id));renderPage();}
+
+// ─── AFFILIATES ──────────────────────────────────────────────────────────────
+function renderAffiliates(){
+  const items=loadA('affiliates',DEF_AFF);
+  return`
+    <div class="ph"><h2>Affiliate Tracker</h2><p>All partnerships — auto-saved.</p></div>
+    <button class="btn btn-primary" style="margin-bottom:14px" onclick="openAffModal()">+ Add Affiliate</button>
+    <div class="ga">
+      ${items.map(a=>`
+        <div class="card" style="margin-bottom:0">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <div style="font-weight:600;font-size:12px;flex:1">${esc(a.name)}</div>
+            <span class="badge" style="background:${a.status==='Active'?'var(--a3)20':'var(--bor)'};color:${a.status==='Active'?'var(--a3)':'var(--mu)'}">${a.status}</span>
+          </div>
+          <div style="font-size:10px;color:var(--mu);margin-bottom:9px">${esc(a.niche)} · ${esc(a.comm)}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:8px">${[['Clicks',fmt(a.clicks)],['Conv.',fmt(a.conv)],['Revenue',fd(a.rev)]].map(([l,v])=>`<div style="text-align:center;background:var(--sur);border-radius:5px;padding:5px"><div style="font-size:12px;font-weight:700;color:var(--a4);font-family:'Cormorant Garamond',serif">${v}</div><div style="font-size:8px;color:var(--mu)">${l}</div></div>`).join('')}</div>
+          ${a.notes?`<div style="font-size:10px;color:var(--mu);margin-bottom:7px">📝 ${esc(a.notes)}</div>`:''}
+          <button class="btn btn-ghost btn-sm" onclick="openAffModal('${a.id}')">Edit</button>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+function openAffModal(id){const items=loadA('affiliates',DEF_AFF);const a=id?items.find(x=>x.id==id):{name:'',niche:'',comm:'',status:'Pending',clicks:0,conv:0,rev:0,notes:''};openModal('Affiliate Program',`${[['name','Program Name'],['niche','Niche'],['comm','Commission Rate']].map(([k,l])=>`<div class="fg"><label>${l}</label><input class="inp" id="af-${k}" value="${esc(a[k]||'')}"/></div>`).join('')}<div class="fr"><div class="fg"><label>Status</label><select class="inp" id="af-status">${['Active','Pending','Paused','Rejected'].map(s=>`<option${a.status===s?' selected':''}>${s}</option>`).join('')}</select></div><div class="fg"><label>Revenue ($)</label><input class="inp" type="number" id="af-rev" value="${a.rev}"/></div></div><div class="fg"><label>Notes</label><textarea class="inp" id="af-notes" style="min-height:45px">${esc(a.notes)}</textarea></div><div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="saveAff('${id||''}')">Save</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function saveAff(id){const items=loadA('affiliates',DEF_AFF);const g=k=>document.getElementById('af-'+k)?.value||'';const a={id:id||uid(),name:g('name'),niche:g('niche'),comm:g('comm'),status:g('status'),rev:Number(g('rev')),clicks:0,conv:0,notes:g('notes')};if(id)saveA('affiliates',items.map(x=>x.id==id?a:x));else{items.push(a);saveA('affiliates',items);}closeModal();renderPage();}
+
+// ─── BRAND DEALS ─────────────────────────────────────────────────────────────
+function renderDeals(){
+  const deals=loadA('deals',DEF_DEALS);
+  return`
+    <div class="ph"><h2>Brand Deals</h2><p>Sponsorships and partnerships — auto-saved.</p></div>
+    <button class="btn btn-primary" style="margin-bottom:14px" onclick="openDealModal()">+ Add Deal</button>
+    <div class="card" style="padding:0"><div class="tw"><table>
+      <thead><tr><th>Brand</th><th>Type</th><th>Value</th><th>Status</th><th>Deadline</th><th>Deliverables</th><th></th></tr></thead>
+      <tbody>
+        ${deals.map(d=>`<tr>
+          <td style="font-weight:600;font-size:11px">${esc(d.brand)}</td>
+          <td style="font-size:10px">${esc(d.type)}</td>
+          <td style="font-weight:700;color:var(--a3);font-size:11px">${fd(d.value)}</td>
+          <td><span class="badge" style="background:${d.status==='Active'?'var(--a3)20':'var(--a4)20'};color:${d.status==='Active'?'var(--a3)':'var(--a4)'}">${d.status}</span></td>
+          <td style="font-size:10px;color:var(--mu)">${d.deadline||'—'}</td>
+          <td style="font-size:10px">${esc(d.deliverables)}</td>
+          <td><button class="btn btn-ghost btn-sm" onclick="openDealModal('${d.id}')">Edit</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div></div>
+  `;
+}
+function openDealModal(id){const deals=loadA('deals',DEF_DEALS);const d=id?deals.find(x=>x.id==id):{brand:'',type:'',value:'',status:'Outreach',deliverables:'',deadline:'',contact:'',notes:''};openModal('Brand Deal',`<div class="fr"><div class="fg"><label>Brand</label><input class="inp" id="dl-brand" value="${esc(d.brand)}"/></div><div class="fg"><label>Type</label><input class="inp" id="dl-type" value="${esc(d.type)}"/></div></div><div class="fr"><div class="fg"><label>Value ($)</label><input class="inp" type="number" id="dl-value" value="${d.value}"/></div><div class="fg"><label>Status</label><select class="inp" id="dl-status">${['Outreach','Negotiating','Active','Completed','Declined'].map(s=>`<option${d.status===s?' selected':''}>${s}</option>`).join('')}</select></div></div><div class="fg"><label>Deliverables</label><textarea class="inp" id="dl-del" style="min-height:45px">${esc(d.deliverables)}</textarea></div><div class="fr"><div class="fg"><label>Deadline</label><input class="inp" type="date" id="dl-deadline" value="${d.deadline||''}"/></div><div class="fg"><label>Contact</label><input class="inp" id="dl-contact" value="${esc(d.contact)}"/></div></div><div class="fg"><label>Notes</label><textarea class="inp" id="dl-notes" style="min-height:45px">${esc(d.notes)}</textarea></div><div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="saveDeal('${id||''}')">Save</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function saveDeal(id){const deals=loadA('deals',DEF_DEALS);const g=k=>document.getElementById('dl-'+k)?.value||'';const d={id:id||uid(),brand:g('brand'),type:g('type'),value:Number(g('value')),status:g('status'),deliverables:g('del'),deadline:g('deadline'),contact:g('contact'),notes:g('notes')};if(id)saveA('deals',deals.map(x=>x.id==id?d:x));else{deals.push(d);saveA('deals',deals);}closeModal();renderPage();}
+
+// ─── FINANCE HUB ─────────────────────────────────────────────────────────────
+function renderFinance(){
+  const fin=loadA('finance',DEF_FINANCE);
+  const totalInc=fin.income.reduce((s,e)=>s+(Number(e.amount)||0),0);
+  const totalExp=fin.expenses.reduce((s,e)=>s+(Number(e.amount)||0),0);
+  const profit=totalInc-totalExp;
+  const mt=['Coaching','Course Sales','Digital Products','Brand Deals','Affiliate','Services','Other'];
+  const et=['Ads','Equipment','Software','Outsourcing','Marketing','Education','Other'];
+  return`
+    <div class="ph"><h2>Finance Hub</h2><p>Income, expenses, and profit — auto-saved.</p></div>
+    <div class="g3" style="margin-bottom:14px">
+      <div class="sc" style="border-color:var(--a3)28"><div style="font-size:16px;margin-bottom:4px">💰</div><div class="stat-val" style="color:var(--a3)">${fd(totalInc)}</div><div class="stat-lbl">Total Income</div></div>
+      <div class="sc" style="border-color:var(--dn)28"><div style="font-size:16px;margin-bottom:4px">💸</div><div class="stat-val" style="color:var(--dn)">${fd(totalExp)}</div><div class="stat-lbl">Total Expenses</div></div>
+      <div class="sc" style="border-color:${profit>=0?'var(--a3)':'var(--dn)'}28"><div style="font-size:16px;margin-bottom:4px">📊</div><div class="stat-val" style="color:${profit>=0?'var(--a3)':'var(--dn)'}">${fd(profit)}</div><div class="stat-lbl">Net Profit</div></div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title">💵 Income</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:7px;margin-bottom:10px;align-items:end">
+          <div><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Date</label><input class="inp" type="date" id="fin-inc-date" style="padding:4px 7px;font-size:11px"/></div>
+          <div><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Source</label><select class="inp" id="fin-inc-cat" style="padding:4px 7px;font-size:11px">${mt.map(m=>`<option>${m}</option>`).join('')}</select></div>
+          <div><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Amount ($)</label><input class="inp" type="number" id="fin-inc-amt" style="padding:4px 7px;font-size:11px"/></div>
+          <button class="btn btn-primary btn-sm" onclick="addFinanceEntry('income')">+ Add</button>
+        </div>
+        ${fin.income.map((e,i)=>`<div class="fin-row"><span style="font-size:11px;flex:1">${e.cat} · <span style="color:var(--mu);font-size:10px">${e.date||'—'}</span></span><span class="fin-amount" style="color:var(--a3)">${fd(e.amount)}</span><button onclick="removeFinEntry('income',${i})" style="background:none;border:none;color:var(--dn);cursor:pointer;font-size:12px;margin-left:6px">✕</button></div>`).join('')}
+        ${fin.income.length===0?`<div style="text-align:center;color:var(--mu);font-size:11px;padding:12px">No income yet</div>`:''}
+      </div>
+      <div class="card">
+        <div class="card-title">💸 Expenses</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:7px;margin-bottom:10px;align-items:end">
+          <div><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Date</label><input class="inp" type="date" id="fin-exp-date" style="padding:4px 7px;font-size:11px"/></div>
+          <div><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Category</label><select class="inp" id="fin-exp-cat" style="padding:4px 7px;font-size:11px">${et.map(m=>`<option>${m}</option>`).join('')}</select></div>
+          <div><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Amount ($)</label><input class="inp" type="number" id="fin-exp-amt" style="padding:4px 7px;font-size:11px"/></div>
+          <button class="btn btn-danger btn-sm" onclick="addFinanceEntry('expenses')">+ Add</button>
+        </div>
+        ${fin.expenses.map((e,i)=>`<div class="fin-row"><span style="font-size:11px;flex:1">${e.cat} · <span style="color:var(--mu);font-size:10px">${e.date||'—'}</span></span><span class="fin-amount" style="color:var(--dn)">${fd(e.amount)}</span><button onclick="removeFinEntry('expenses',${i})" style="background:none;border:none;color:var(--dn);cursor:pointer;font-size:12px;margin-left:6px">✕</button></div>`).join('')}
+        ${fin.expenses.length===0?`<div style="text-align:center;color:var(--mu);font-size:11px;padding:12px">No expenses yet</div>`:''}
+      </div>
+    </div>
+  `;
+}
+function addFinanceEntry(type){
+  const fin=loadA('finance',DEF_FINANCE);
+  const prefix=type==='income'?'inc':'exp';
+  const amt=Number(document.getElementById(`fin-${prefix}-amt`)?.value||0);
+  if(!amt)return;
+  const entry={id:uid(),date:document.getElementById(`fin-${prefix}-date`)?.value||'',cat:document.getElementById(`fin-${prefix}-cat`)?.value||'',amount:amt};
+  fin[type].push(entry);saveA('finance',fin);renderPage();
+}
+function removeFinEntry(type,idx){const fin=loadA('finance',DEF_FINANCE);fin[type].splice(idx,1);saveA('finance',fin);renderPage();}
+
+// ─── COLLAB TRACKER ──────────────────────────────────────────────────────────
+function renderCollab(){
+  const collabs=loadA('collabs',DEF_COLLABS);
+  return`
+    <div class="ph"><h2>Collab Tracker</h2><p>Track your collaboration outreach — auto-saved.</p></div>
+    <button class="btn btn-primary" style="margin-bottom:14px" onclick="openCollabModal()">+ Add Collab</button>
+    <div class="card" style="padding:0"><div class="tw"><table>
+      <thead><tr><th>Done</th><th>Username</th><th>Platform 1</th><th>Platform 2</th><th>Msg 1</th><th>Msg 2</th><th>Msg 3</th><th>Product</th><th>Followers</th><th>Category</th><th></th></tr></thead>
+      <tbody>
+        ${collabs.filter(c=>c.username).map(c=>`<tr>
+          <td><input type="checkbox" class="task-check" ${c.done?'checked':''} onchange="updateCollab('${c.id}','done',this.checked)"/></td>
+          <td style="font-weight:600;font-size:11px">${esc(c.username)}</td>
+          <td style="font-size:10px">${esc(c.platform1)}</td>
+          <td style="font-size:10px">${esc(c.platform2)}</td>
+          <td style="text-align:center"><input type="checkbox" class="task-check" ${c.sent1?'checked':''} onchange="updateCollab('${c.id}','sent1',this.checked)"/></td>
+          <td style="text-align:center"><input type="checkbox" class="task-check" ${c.sent2?'checked':''} onchange="updateCollab('${c.id}','sent2',this.checked)"/></td>
+          <td style="text-align:center"><input type="checkbox" class="task-check" ${c.sent3?'checked':''} onchange="updateCollab('${c.id}','sent3',this.checked)"/></td>
+          <td style="font-size:10px">${esc(c.product)}</td>
+          <td style="font-size:10px">${esc(c.followers)}</td>
+          <td style="font-size:10px">${esc(c.category)}</td>
+          <td><button class="btn btn-danger btn-sm" onclick="deleteCollab('${c.id}')">✕</button></td>
+        </tr>`).join('')}
+        ${collabs.filter(c=>c.username).length===0?`<tr><td colspan="10" style="text-align:center;color:var(--mu);padding:20px">No collabs yet!</td></tr>`:''}
+      </tbody>
+    </table></div></div>
+  `;
+}
+function openCollabModal(){
+  const plats=['TikTok','Instagram','YouTube','Facebook','Pinterest','Twitter'];
+  openModal('Add Collab',`
+    <div class="fg"><label>Username</label><input class="inp" id="co-user" placeholder="@username"/></div>
+    <div class="fr"><div class="fg"><label>Platform 1</label><select class="inp" id="co-p1">${plats.map(p=>`<option>${p}</option>`).join('')}</select></div><div class="fg"><label>Platform 2</label><select class="inp" id="co-p2"><option value=""></option>${plats.map(p=>`<option>${p}</option>`).join('')}</select></div></div>
+    <div class="fr"><div class="fg"><label>Product/Offer</label><input class="inp" id="co-product"/></div><div class="fg"><label>Followers</label><input class="inp" id="co-followers"/></div></div>
+    <div class="fg"><label>Category</label><input class="inp" id="co-cat" placeholder="e.g. Travel, Lifestyle"/></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="saveCollab()">Save</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>
+  `);
+}
+function saveCollab(){
+  const collabs=loadA('collabs',DEF_COLLABS);
+  const c={id:uid(),username:document.getElementById('co-user')?.value||'',platform1:document.getElementById('co-p1')?.value||'',platform2:document.getElementById('co-p2')?.value||'',product:document.getElementById('co-product')?.value||'',followers:document.getElementById('co-followers')?.value||'',category:document.getElementById('co-cat')?.value||'',sent1:false,sent2:false,sent3:false};
+  collabs.push(c);saveA('collabs',collabs);closeModal();renderPage();
+}
+function updateCollab(id,field,val){const collabs=loadA('collabs',DEF_COLLABS);saveA('collabs',collabs.map(c=>c.id==id?{...c,[field]:val}:c));}
+function deleteCollab(id){const collabs=loadA('collabs',DEF_COLLABS);saveA('collabs',collabs.filter(x=>x.id!=id));renderPage();}
+
+// ─── AI AGENT ────────────────────────────────────────────────────────────────
+function getClaudeKey(){return load('cos_claude_key','');}
+function saveClaudeKey(k){save('cos_claude_key',k.trim());}
+function getClaudeSys(){
+  const a=getAcc();
+  const base=a.agentSys||('You are an AI content agent for '+a.name+'. Help create viral content, captions, hooks, and strategies for this brand.');
+  return base+(a.niche?'\nNiche: '+a.niche:'')+(a.voice?'\nVoice: '+a.voice:'')+(a.audience?'\nAudience: '+a.audience:'');
+}
+const DEFAULT_QUICK=['Write me 5 viral content ideas for this week','Generate a hook for my next post','Write a caption with hashtags','Create a 7-day content calendar','Write a pitch email to a brand','Give me 10 viral hooks for my niche','Write a script for a short-form video','How do I grow faster on social media?'];
+function renderAgent(){
+  const apiKey=getClaudeKey();
+  const chat=loadA('chat',[{role:'ai',content:`Hey! 👋 I'm your AI Content Agent for ${getAcc().name}.\n\nI can write scripts, hooks, captions, content plans, pitch emails — all tailored to your brand.\n\nWhat do you need today?`}]);
+  if(!apiKey){
+    return`
+      <div class="ph"><h2>🤖 AI Agent — ${getAcc().emoji} ${getAcc().name}</h2><p>Connect Claude AI to power your content agent.</p></div>
+      <div class="card" style="max-width:520px;margin:0 auto;text-align:center;padding:30px 24px">
+        <div style="font-size:40px;margin-bottom:12px">🔑</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;margin-bottom:8px">Connect Your Claude API Key</div>
+        <div style="font-size:12px;color:var(--mu);margin-bottom:20px;line-height:1.6">Your key is saved only on this device — never shared or uploaded anywhere.<br/>Get your free key at <strong style="color:var(--a1)">console.anthropic.com</strong></div>
+        <input class="inp" id="claude-key-inp" type="password" placeholder="sk-ant-api03-..." style="margin-bottom:12px;font-family:monospace;font-size:11px"/>
+        <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="
+          const k=document.getElementById('claude-key-inp').value.trim();
+          if(!k||!k.startsWith('sk-ant-')){alert('Please enter a valid Claude API key (starts with sk-ant-)');return;}
+          saveClaudeKey(k);renderPage();
+        ">✦ Save & Connect</button>
+        <div style="margin-top:16px;font-size:10px;color:var(--mu)">Steps: console.anthropic.com → API Keys → Create Key → Copy → Paste above</div>
+      </div>
+    `;
+  }
+  return`
+    <div class="ph"><h2>🤖 AI Agent — ${getAcc().emoji} ${getAcc().name}</h2><p>Powered by Claude AI · Your personal brand assistant.</p></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.08em">Quick Actions</div>
+      <button class="btn btn-ghost btn-sm" onclick="if(confirm('Remove API key?')){saveClaudeKey('');renderPage();}">🔑 Change Key</button>
+    </div>
+    <div style="margin-bottom:12px">${DEFAULT_QUICK.map(q=>`<button class="qb" data-q="${esc(q)}" onclick="sendChat(this.getAttribute('data-q'))">${esc(q)}</button>`).join('')}</div>
+    <div class="chat-wrap">
+      <div class="chat-msgs" id="chat-msgs">
+        ${chat.map(m=>`<div class="chat-msg ${m.role}">${m.role==='ai'?'<div class="ai-label">✦ Claude AI</div>':''}${esc(m.content)}</div>`).join('')}
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-end">
+        <textarea class="chat-inp" id="chat-input" placeholder="Ask anything — tailored to ${getAcc().name}..." rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+        <button class="btn btn-primary" id="chat-send-btn" onclick="sendChat()" style="height:42px;align-self:flex-end">Send ✦</button>
+      </div>
+      <div style="font-size:9px;color:var(--mu);text-align:right;margin-top:4px">
+        <button class="btn btn-ghost btn-sm" onclick="saveA('chat',[]);renderPage()">🗑 Clear Chat</button>
+      </div>
+    </div>
+  `;
+}
+function initAgent(){const msgs=document.getElementById('chat-msgs');if(msgs)msgs.scrollTop=msgs.scrollHeight;}
+
+async function sendChat(text){
+  const apiKey=getClaudeKey();
+  if(!apiKey){renderPage();return;}
+  const inp=document.getElementById('chat-input');
+  const msg=text||(inp?inp.value.trim():'');
+  if(!msg)return;
+  if(inp)inp.value='';
+  const chat=loadA('chat',[]);
+  chat.push({role:'user',content:msg});saveA('chat',chat);
+  const msgs=document.getElementById('chat-msgs');
+  if(msgs){msgs.innerHTML+=`<div class="chat-msg user">${esc(msg)}</div><div class="chat-msg ai" id="loading-msg"><div class="ai-label">✦ Claude AI</div><em style="color:var(--mu)">Writing your content...</em></div>`;msgs.scrollTop=msgs.scrollHeight;}
+  const btn=document.getElementById('chat-send-btn');if(btn)btn.disabled=true;
+  try{
+    const history=chat.slice(-12).map(m=>({role:m.role==='ai'?'assistant':'user',content:m.content}));
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,system:getClaudeSys(),messages:history})
+    });
+    const data=await res.json();
+    if(data.error){throw new Error(data.error.message||'API error');}
+    const reply=(data.content&&data.content[0]&&data.content[0].text)||'Sorry, something went wrong. Try again!';
+    chat.push({role:'ai',content:reply});saveA('chat',chat);
+    const loading=document.getElementById('loading-msg');
+    if(loading)loading.outerHTML=`<div class="chat-msg ai"><div class="ai-label">✦ Claude AI</div>${esc(reply)}</div>`;
+  }catch(e){
+    const loading=document.getElementById('loading-msg');
+    if(loading)loading.outerHTML=`<div class="chat-msg ai"><div class="ai-label">✦ Claude AI</div>⚠️ ${esc(e.message||'Network error — check your API key and try again.')}.</div>`;
+  }
+  if(btn)btn.disabled=false;
+  const msgsEl=document.getElementById('chat-msgs');if(msgsEl)msgsEl.scrollTop=msgsEl.scrollHeight;
+}
+
+// ─── NOTES ───────────────────────────────────────────────────────────────────
+function renderNotes(){
+  const notes=loadA('notes',DEF_NOTES);
+  const sorted=[...notes].sort((a,b)=>b.pinned-a.pinned);
+  const act=STATE.activeNote?notes.find(n=>n.id==STATE.activeNote):null;
+  return`
+    <div class="ph"><h2>Brain Dump Notes</h2><p>Your second brain — ideas, research, anything. Auto-saved.</p></div>
+    <div style="display:grid;grid-template-columns:245px 1fr;gap:14px;min-height:60vh">
+      <div>
+        <div style="display:flex;gap:5px;margin-bottom:9px">
+          <input class="inp" placeholder="🔍 Search..." style="flex:1" oninput="filterNotes(this.value)"/>
+          <button class="btn btn-primary btn-sm" onclick="newNote()">+</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          ${sorted.map(n=>`
+            <div class="nc" style="border-left:3px solid ${n.color};${STATE.activeNote==n.id?'background:var(--sur)':''}" onclick="selectNote('${n.id}')">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                <div style="font-size:12px;font-weight:600;margin-bottom:3px;color:${STATE.activeNote==n.id?n.color:'inherit'}">${esc(n.title)}</div>
+                <div style="display:flex;gap:2px;flex-shrink:0">
+                  <button style="background:none;border:none;font-size:11px;color:${n.pinned?'var(--a4)':'var(--mu)'};cursor:pointer" onclick="event.stopPropagation();pinNote('${n.id}')">📌</button>
+                  <button style="background:none;border:none;font-size:10px;color:var(--dn);cursor:pointer" onclick="event.stopPropagation();deleteNote('${n.id}')">✕</button>
+                </div>
+              </div>
+              <div style="font-size:10px;color:var(--mu);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical">${esc(n.content)}</div>
+              <div style="font-size:9px;color:var(--mu);margin-top:4px">${n.date}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      ${act?`
+        <div class="card" style="border-color:${act.color}38;display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <input style="flex:1;background:none;border:none;outline:none;font-size:18px;font-weight:700;font-family:'Cormorant Garamond',serif;color:${act.color}" value="${esc(act.title)}" id="note-title-inp" onblur="updateNote('title',this.value)"/>
+            <input type="color" value="${act.color}" onchange="updateNote('color',this.value)" style="width:26px;height:26px;border:none;border-radius:5px;cursor:pointer;padding:2px;background:none"/>
+          </div>
+          <div style="display:flex;gap:5px;margin-bottom:7px;flex-wrap:wrap">
+            <button class="btn btn-ghost btn-sm" onclick="noteInsertChecklist()">☑️ Add Checklist</button>
+            <button class="btn btn-ghost btn-sm" onclick="noteCheckAll()">✅ Check All</button>
+            <button class="btn btn-ghost btn-sm" onclick="noteUncheckAll()">🔲 Uncheck All</button>
+          </div>
+          <textarea class="inp" id="note-content-inp" style="flex:1;min-height:300px;border-color:${act.color}38;resize:vertical" onblur="updateNote('content',this.value)" placeholder="Brain dump everything here...">${esc(act.content)}</textarea>
+          ${imgUploadBtn('note_'+act.id,'Note Image')}
+          <div style="display:flex;gap:7px;margin-top:10px">
+            <button class="btn btn-primary btn-sm" onclick="updateNote('content',document.getElementById('note-content-inp').value);updateNote('title',document.getElementById('note-title-inp').value)">💾 Save</button>
+            <button class="btn btn-ghost btn-sm" onclick="pinNote('${act.id}')">${act.pinned?'Unpin':'📌 Pin'}</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteNote('${act.id}')">Delete</button>
+          </div>
+        </div>
+      `:`
+        <div class="card" style="display:flex;align-items:center;justify-content:center;min-height:240px">
+          <div class="empty"><div style="font-size:36px;margin-bottom:9px">📓</div><p style="font-size:11px">Select a note or create a new one.</p><button class="btn btn-primary" style="margin-top:10px" onclick="newNote()">+ New Note</button></div>
+        </div>
+      `}
+    </div>
+  `;
+}
+function newNote(){const notes=loadA('notes',DEF_NOTES);const n={id:uid(),title:'Untitled',tags:[],color:'#e8836a',pinned:false,content:'',date:new Date().toISOString().slice(0,10)};notes.unshift(n);saveA('notes',notes);STATE.activeNote=n.id;renderPage();}
+function selectNote(id){STATE.activeNote=id;renderPage();}
+function updateNote(field,val){const notes=loadA('notes',DEF_NOTES);saveA('notes',notes.map(n=>n.id==STATE.activeNote?{...n,[field]:val}:n));}
+function pinNote(id){const notes=loadA('notes',DEF_NOTES);saveA('notes',notes.map(n=>n.id==id?{...n,pinned:!n.pinned}:n));renderPage();}
+function deleteNote(id){const notes=loadA('notes',DEF_NOTES);saveA('notes',notes.filter(n=>n.id!=id));if(STATE.activeNote==id)STATE.activeNote=null;renderPage();}
+function filterNotes(q){document.querySelectorAll('.nc').forEach(c=>{c.style.display=c.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';});}
+function toggleScriptDone(id,done){const scripts=loadA('scripts',DEF_SCRIPTS);saveA('scripts',scripts.map(s=>s.id==id?{...s,done}:s));}
+function noteInsertChecklist(){const ta=document.getElementById('note-content-inp');if(!ta)return;const pos=ta.selectionStart;const val=ta.value;ta.value=val.slice(0,pos)+(pos>0&&val[pos-1]!=='\n'?'\n':'')+'☐ '+val.slice(pos);ta.selectionStart=ta.selectionEnd=pos+(pos>0&&val[pos-1]!=='\n'?1:0)+3;ta.focus();}
+function noteCheckAll(){const ta=document.getElementById('note-content-inp');if(!ta)return;ta.value=ta.value.replace(/☐/g,'☑');updateNote('content',ta.value);}
+function noteUncheckAll(){const ta=document.getElementById('note-content-inp');if(!ta)return;ta.value=ta.value.replace(/☑/g,'☐');updateNote('content',ta.value);}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+async function initApp(){
+  const loadMsg=document.getElementById('loading-msg');
+  if(loadMsg)loadMsg.textContent=_fbReady()?'☁️ Syncing your data...':'⚡ Loading...';
+
+  await _pullFromCloud();
+
+  ACCOUNTS=load('cos_accounts',ACCOUNT_DEFAULTS);
+  ACTIVE_ACC=load('cos_active_acc',0);
+
+  const acc=getAcc();
+  document.getElementById('acc-emoji').textContent=acc.emoji;
+  document.getElementById('acc-name').textContent=acc.name;
+  const logoSub=document.getElementById('logo-sub');
+  if(logoSub)logoSub.textContent=acc.name+' · Creator OS';
+  rebuildDropdown();
+  renderNav();
+  renderPage();
+
+  const overlay=document.getElementById('loading-overlay');
+  if(overlay){overlay.style.opacity='0';setTimeout(()=>overlay.remove(),400);}
+  _setSyncStatus('synced');
+}
+initApp();
+
+// ─── POMODORO ─────────────────────────────────────────────────────────────────
+var POMO={w:25,sb:5,lb:15,rd:4,phase:'work',round:1,run:false,tmr:null,sec:1500,tot:1500};
+function pomoUpdate(){POMO.w=Number(document.getElementById('pw')||{value:25}).value||25;POMO.sb=Number((document.getElementById('psb')||{value:5}).value)||5;POMO.lb=Number((document.getElementById('plb')||{value:15}).value)||15;POMO.rd=Number((document.getElementById('prd')||{value:4}).value)||4;if(!POMO.run)pomoReset();}
+function pomoToggle(){if(POMO.run){clearInterval(POMO.tmr);POMO.run=false;var b=document.getElementById('pomo-play');if(b)b.textContent='▶ Start';}else{POMO.run=true;var b=document.getElementById('pomo-play');if(b)b.textContent='⏸ Pause';POMO.tmr=setInterval(pomoTick,1000);}}
+function pomoTick(){POMO.sec--;if(POMO.sec<=0){pomoAlert();pomoNext();}pomoDisplay();}
+function pomoNext(){if(POMO.phase==='work'){if(POMO.round>=POMO.rd){POMO.phase='long';POMO.sec=POMO.lb*60;POMO.tot=POMO.lb*60;}else{POMO.phase='short';POMO.sec=POMO.sb*60;POMO.tot=POMO.sb*60;}}else if(POMO.phase==='short'){POMO.round++;POMO.phase='work';POMO.sec=POMO.w*60;POMO.tot=POMO.w*60;}else{POMO.round=1;POMO.phase='work';POMO.sec=POMO.w*60;POMO.tot=POMO.w*60;}}
+function pomoSkip(){clearInterval(POMO.tmr);POMO.run=false;var b=document.getElementById('pomo-play');if(b)b.textContent='▶ Start';pomoNext();pomoDisplay();}
+function pomoReset(){clearInterval(POMO.tmr);POMO.run=false;POMO.phase='work';POMO.round=1;POMO.sec=POMO.w*60;POMO.tot=POMO.w*60;var b=document.getElementById('pomo-play');if(b)b.textContent='▶ Start';pomoDisplay();}
+function pomoAlert(){try{var c=new(window.AudioContext||window.webkitAudioContext)();var o=c.createOscillator();var g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=880;g.gain.value=0.3;o.start();setTimeout(function(){o.stop();c.close();},500);}catch(e){}}
+function pomoDisplay(){var m=Math.floor(POMO.sec/60),s=POMO.sec%60;var te=document.getElementById('pomo-time');var pe=document.getElementById('pomo-phase');var re=document.getElementById('pomo-rounds');var be=document.getElementById('pomo-bar');var de=document.getElementById('pomo-dots');if(te)te.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;if(pe)pe.textContent=POMO.phase==='work'?'Work Session 💪':POMO.phase==='short'?'Short Break ☕':'Long Break 🌿';if(re)re.textContent='Round '+POMO.round+' of '+POMO.rd;if(be)be.style.width=((POMO.sec/POMO.tot)*100)+'%';if(de){var d='';for(var i=0;i<POMO.rd;i++)d+=i<POMO.round?'🍅':'⬜';de.textContent=d;}if(te)te.style.color=POMO.phase==='work'?'var(--a1)':POMO.phase==='short'?'var(--a3)':'var(--a5)';}
+pomoDisplay();
+if(Notification&&Notification.permission==='default')Notification.requestPermission();
+
+// ─── IMAGE UPLOAD ─────────────────────────────────────────────────────────────
+function imgUploadBtn(storageKey,label){
+  const existing=load(accKey(storageKey),'');
+  return`<div style="margin-top:8px">
+    <div style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;margin-bottom:6px">${label||'Image'}</div>
+    ${existing?`<div style="position:relative;margin-bottom:5px"><img src="${existing}" style="width:100%;max-height:180px;object-fit:cover;border-radius:7px;border:1px solid var(--bor)"/><button onclick="removeImg('${storageKey}')" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.7);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button></div>`:''}
+    <label style="display:flex;align-items:center;gap:6px;padding:7px 11px;background:var(--sur);border:1px dashed var(--bor);border-radius:7px;cursor:pointer;font-size:11px;color:var(--mu);transition:all .15s" onmouseover="this.style.borderColor='var(--a1)';this.style.color='var(--a1)'" onmouseout="this.style.borderColor='var(--bor)';this.style.color='var(--mu)'">
+      🖼️ ${existing?'Replace':'Upload'} Image
+      <input type="file" accept="image/*" style="display:none" onchange="handleImgUpload(event,'${storageKey}')"/>
+    </label>
+  </div>`;
+}
+function handleImgUpload(e,key){
+  const file=e.target.files[0];if(!file)return;
+  if(file.size>5*1024*1024){alert('Image too large! Please use an image under 5MB.');return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{save(accKey(key),ev.target.result);renderPage();};
+  reader.readAsDataURL(file);
+}
+function removeImg(key){save(accKey(key),'');renderPage();}
+</script>
+</body>
+</html>
