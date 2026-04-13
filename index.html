@@ -14,7 +14,6 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}button{cursor:poin
 
 .shell{display:flex;min-height:100vh}
 
-/* SIDEBAR — height:100vh fixes iPad landscape Safari scroll bug */
 .sb{width:225px;height:100vh;background:var(--sur);border-right:1px solid var(--bor);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
 .logo{padding:16px;border-bottom:1px solid var(--bor)}
 .logo h1{font-family:'Cormorant Garamond',serif;font-size:20px;background:linear-gradient(135deg,var(--a1),var(--a3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
@@ -24,7 +23,6 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}button{cursor:poin
 .autosave.error{color:var(--dn)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
-/* ACCOUNT SWITCHER */
 .acc-switch{padding:10px 12px;border-bottom:1px solid var(--bor)}
 .acc-label{font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
 .acc-current{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--a1)44;border-radius:8px;padding:8px 10px;cursor:pointer;transition:all .15s}
@@ -52,7 +50,6 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}button{cursor:poin
 .ni.active{background:linear-gradient(135deg,rgba(232,131,106,.13),rgba(122,184,138,.07));color:var(--tx);border:1px solid rgba(232,131,106,.25)}
 .sb-footer{padding:10px;border-top:1px solid var(--bor);font-size:9px;color:var(--mu);text-align:center}
 
-/* POMODORO */
 .pomo{padding:10px 12px;border-bottom:1px solid var(--bor);background:linear-gradient(135deg,rgba(232,131,106,.05),rgba(122,184,138,.03))}
 .pomo-hdr{font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center}
 .pomo-bar{height:3px;background:var(--bor);border-radius:99px;overflow:hidden;margin-bottom:6px}
@@ -72,7 +69,6 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}button{cursor:poin
 .pomo-lbl{font-size:8px;color:var(--mu);display:block;margin-bottom:1px}
 .pomo-inp{background:var(--bg);border:1px solid var(--bor);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;width:100%;outline:none}
 
-/* CHECKBOXES */
 .cbox{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--bor);cursor:pointer;flex-shrink:0;background:none;appearance:none;-webkit-appearance:none;transition:all .15s;vertical-align:middle}
 .cbox:checked{background:var(--a3);border-color:var(--a3)}
 .cbox-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(42,56,48,.07)}
@@ -144,7 +140,6 @@ select.inp{cursor:pointer}
 .qb{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:500;border:1px solid rgba(232,131,106,.3);background:rgba(232,131,106,.07);color:var(--a1);cursor:pointer;margin:2px;transition:all .15s}
 .qb:hover{background:rgba(232,131,106,.15)}
 
-/* BRAND IDENTITY */
 .brand-kit-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
 .color-swatch{width:40px;height:40px;border-radius:8px;border:1px solid var(--bor);cursor:pointer}
 .color-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
@@ -152,12 +147,10 @@ select.inp{cursor:pointer}
 .pillar-box{background:var(--sur);border:1px solid var(--bor);border-radius:8px;padding:10px}
 .pillar-label{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-bottom:4px}
 
-/* 30 DAY PLAN */
 .day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
 .day-card{background:var(--sur);border:1px solid var(--bor);border-radius:8px;padding:10px}
 .day-num{font-size:10px;font-weight:700;color:var(--a1);margin-bottom:6px}
 
-/* TASK TRACKER */
 .task-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(42,56,48,.08)}
 .task-check{width:16px;height:16px;border-radius:4px;border:2px solid var(--bor);cursor:pointer;flex-shrink:0;background:none;appearance:none;-webkit-appearance:none;transition:all .15s;display:inline-block;vertical-align:middle;position:relative}
 .task-check:checked{background:var(--a3);border-color:var(--a3)}
@@ -168,11 +161,9 @@ select.inp{cursor:pointer}
 .checklist-label.done{text-decoration:line-through;color:var(--mu)}
 .priority-badge{padding:1px 7px;border-radius:99px;font-size:9px;font-weight:700}
 
-/* FINANCE HUB */
 .fin-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(42,56,48,.08);font-size:12px}
 .fin-amount{font-weight:700;font-family:'Cormorant Garamond',serif;font-size:16px}
 
-/* ANALYTICS */
 .platform-row{display:grid;grid-template-columns:120px 1fr 1fr 80px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(42,56,48,.08);font-size:11px}
 
 @media(max-width:820px){.g2,.g3{grid-template-columns:1fr}.main{padding:12px}.sb{width:190px}.main{margin-left:190px}}
@@ -181,18 +172,16 @@ select.inp{cursor:pointer}
 <body>
 <div id="loading-overlay" style="position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;transition:opacity .4s">
   <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;background:linear-gradient(135deg,var(--a1),var(--a3));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Creator OS</div>
-  <div style="font-size:11px;color:var(--mu)">☁️ Syncing your data...</div>
+  <div style="font-size:11px;color:var(--mu)" id="loading-msg">☁️ Syncing your data...</div>
 </div>
 <div class="shell">
   <div class="sb">
     <div class="logo">
       <h1>Creator OS</h1>
       <p id="logo-sub">Your Content Empire</p>
-      <div class="autosave" id="sync-status">☁️ Syncing...</div>
+      <div class="autosave" id="sync-status">☁️ Synced</div>
     </div>
 
-
-    <!-- POMODORO TIMER -->
     <div class="pomo">
       <div class="pomo-hdr"><span>⏱️ Pomodoro</span><span id="pomo-dots">🍅</span></div>
       <div class="pomo-bar"><div class="pomo-fill" id="pomo-bar" style="width:100%"></div></div>
@@ -217,7 +206,6 @@ select.inp{cursor:pointer}
       </div>
     </div>
 
-    <!-- ACCOUNT SWITCHER -->
     <div class="acc-switch">
       <div class="acc-label">Active Account</div>
       <div class="acc-current" onclick="toggleAccDropdown()">
@@ -232,7 +220,7 @@ select.inp{cursor:pointer}
     </div>
 
     <nav class="snav" id="sidebar-nav"></nav>
-    <div class="sb-footer">Creator OS v4.0 · Pomodoro + AI</div>
+    <div class="sb-footer">Creator OS v4.1 · Firebase Sync</div>
   </div>
 
   <main class="main" id="main-content"></main>
@@ -249,10 +237,17 @@ select.inp{cursor:pointer}
 </div>
 
 <script>
-// ─── STORAGE (Netlify Blobs Synced) ──────────────────────────────────────────
+// ─── FIREBASE CONFIG ──────────────────────────────────────────────────────────
+// ★ PASTE YOUR FIREBASE DATABASE URL BELOW (from Firebase Console)
+// It looks like: https://your-project-name-default-rtdb.firebaseio.com
+const FB_URL = 'https://creator-os-2ff31-default-rtdb.firebaseio.com';
+// ─────────────────────────────────────────────────────────────────────────────
+
 const _mem={};
 const _saveQueue=new Map();
 let _saveTimer=null;
+
+function _fbReady(){return FB_URL&&!FB_URL.includes('PASTE_YOUR');}
 
 function load(key,def){
   if(key in _mem){try{return JSON.parse(_mem[key]);}catch{return def;}}
@@ -266,18 +261,23 @@ function save(key,val){
     _mem[key]=json;
     try{localStorage.setItem(key,json);}catch{}
     _saveQueue.set(key,json);
-    if(!_saveTimer)_saveTimer=setTimeout(_flushSaves,400);
+    if(!_saveTimer)_saveTimer=setTimeout(_flushSaves,800);
   }catch(e){console.warn('Save failed:',e);}
 }
 
 async function _flushSaves(){
   _saveTimer=null;
+  if(!_fbReady())return;
   const entries=[..._saveQueue.entries()];
   _saveQueue.clear();
   _setSyncStatus('syncing');
   try{
     await Promise.all(entries.map(([k,v])=>
-      fetch('/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,value:v})}).catch(()=>{})
+      fetch(`${FB_URL}/creatorOS/${k}.json`,{
+        method:'PUT',
+        headers:{'Content-Type':'application/json'},
+        body:v
+      }).catch(()=>{})
     ));
     _setSyncStatus('synced');
   }catch(e){
@@ -290,29 +290,40 @@ function _setSyncStatus(s){
   const el=document.getElementById('sync-status');
   if(!el)return;
   el.className='autosave'+(s==='syncing'?' syncing':s==='error'?' error':'');
-  el.textContent=s==='syncing'?'☁️ Syncing...':s==='error'?'⚠️ Sync error — retrying':'☁️ Synced across devices';
+  el.textContent=s==='syncing'?'☁️ Syncing...':s==='error'?'⚠️ Sync error — check Firebase URL':'☁️ Synced across devices';
 }
 
 async function cloudDelete(key){
   delete _mem[key];
   try{localStorage.removeItem(key);}catch{}
-  try{await fetch('/sync?key='+encodeURIComponent(key),{method:'DELETE'});}catch(e){}
+  if(!_fbReady())return;
+  try{await fetch(`${FB_URL}/creatorOS/${key}.json`,{method:'DELETE'});}catch(e){}
 }
 
 async function _pullFromCloud(){
+  if(!_fbReady()){
+    // No Firebase configured — just use localStorage
+    _setSyncStatus('synced');
+    return;
+  }
   try{
-    const res=await fetch('/sync?list=cos_');
-    if(!res.ok)return;
-    const {keys}=await res.json();
-    if(!keys||!keys.length)return;
-    const items=await Promise.all(keys.map(k=>fetch('/sync?key='+encodeURIComponent(k)).then(r=>r.json()).catch(()=>null)));
-    items.forEach(item=>{
-      if(item&&item.value!=null){
-        _mem[item.key]=item.value;
-        try{localStorage.setItem(item.key,item.value);}catch{}
-      }
-    });
-  }catch(e){console.warn('Cloud pull failed:',e);}
+    _setSyncStatus('syncing');
+    const res=await fetch(`${FB_URL}/creatorOS.json`);
+    if(!res.ok){_setSyncStatus('error');return;}
+    const data=await res.json();
+    if(data&&typeof data==='object'){
+      Object.entries(data).forEach(([k,v])=>{
+        if(v!=null){
+          _mem[k]=v;
+          try{localStorage.setItem(k,v);}catch{}
+        }
+      });
+    }
+    _setSyncStatus('synced');
+  }catch(e){
+    console.warn('Cloud pull failed:',e);
+    _setSyncStatus('error');
+  }
 }
 
 // ─── ACCOUNTS ────────────────────────────────────────────────────────────────
@@ -410,23 +421,17 @@ function deleteAccount(idx){
   if(ACCOUNTS.length<=1){alert('You must have at least one account.');return;}
   const acc=ACCOUNTS[idx];
   if(!confirm(`Delete "${acc.name}"? All data for this account will be removed.`))return;
-  // Remove account-specific keys from all stores
   const prefix='cos_'+acc.id+'_';
   const keysToRemove=new Set();
-  // Check in-memory store
   Object.keys(_mem).forEach(k=>{if(k.startsWith(prefix))keysToRemove.add(k);});
-  // Check localStorage
   try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(prefix))keysToRemove.add(k);}}catch{}
   keysToRemove.forEach(k=>{cloudDelete(k);});
-  // Remove from accounts array
   ACCOUNTS.splice(idx,1);
   save('cos_accounts',ACCOUNTS);
-  // If we deleted the active or a preceding account, adjust index
   if(ACTIVE_ACC>=ACCOUNTS.length)ACTIVE_ACC=ACCOUNTS.length-1;
   else if(idx<ACTIVE_ACC)ACTIVE_ACC--;
   else if(idx===ACTIVE_ACC)ACTIVE_ACC=Math.min(ACTIVE_ACC,ACCOUNTS.length-1);
   save('cos_active_acc',ACTIVE_ACC);
-  // Refresh UI
   const a=getAcc();
   document.getElementById('acc-emoji').textContent=a.emoji;
   document.getElementById('acc-name').textContent=a.name;
@@ -447,7 +452,6 @@ function rebuildDropdown(){
     btn.textContent=`${a.emoji} ${a.name}`;
     btn.onclick=()=>switchAccount(i);
     wrap.appendChild(btn);
-    // Delete button (always show, but prevent deleting last account)
     const del=document.createElement('button');
     del.className='acc-del';
     del.textContent='✕';
@@ -505,7 +509,7 @@ const DEF_DEALS=[{id:1,brand:'First Brand',type:'Gifted',value:0,status:'Outreac
 const DEF_REV=[{id:1,date:'',source:'',type:'Digital Product',amount:0,notes:''}];
 const DEF_NOTES=[{id:1,title:'Brain Dump',tags:[],color:'#e8836a',pinned:true,content:'Add your ideas here...',date:new Date().toISOString().slice(0,10)}];
 const DEF_ANALYTICS=[{id:1,title:'',date:'',platform:'TikTok',likes:0,views:0,comments:0,shares:0}];
-const DEF_PLATFORM=[{platform:'TikTok',current:0,goal:10000,trend:''},{ platform:'Instagram',current:0,goal:5000,trend:''},{platform:'YouTube',current:0,goal:1000,trend:''},{platform:'Facebook',current:0,goal:2000,trend:''},{platform:'Pinterest',current:0,goal:3000,trend:''}];
+const DEF_PLATFORM=[{platform:'TikTok',current:0,goal:10000,trend:''},{platform:'Instagram',current:0,goal:5000,trend:''},{platform:'YouTube',current:0,goal:1000,trend:''},{platform:'Facebook',current:0,goal:2000,trend:''},{platform:'Pinterest',current:0,goal:3000,trend:''}];
 const DEF_COLLABS=[{id:1,username:'',platform1:'',platform2:'',sent1:false,sent2:false,sent3:false,product:'',followers:'',category:'',notes:''}];
 const DEF_FINANCE={income:[],expenses:[],budget_income:0,budget_expenses:0};
 const DEF_THIRTY=Array.from({length:30},(_,i)=>({day:i+1,title:'',pillar:'',format:'',status:'',platform:'',caption:'',cta:'',hashtags:'',notes:''}));
@@ -539,8 +543,9 @@ function renderDashboard(){
   return`
     <div class="ph">
       <h2>${(()=>{const h=new Date().getHours();return h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Good night';})()} <span class="glow">${esc(acc.name)}</span> ${acc.emoji}</h2>
-      <p>${acc.name} · ${acc.handle} · All data auto-saves to your device</p>
+      <p>${acc.name} · ${acc.handle} · All data syncs across devices</p>
     </div>
+    ${!_fbReady()?`<div style="background:rgba(240,184,122,.1);border:1px solid rgba(240,184,122,.3);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:11px;color:var(--a4)">⚠️ <strong>Firebase not connected yet</strong> — data saves locally only. See the setup guide to enable cross-device sync.</div>`:''}
     <div class="sg">
       ${[{e:'📱',v:posts.length,l:'Posts Tracked',c:'#e8836a'},{e:'💰',v:fd(rev),l:'Revenue',c:'#7ab88a'},{e:'✅',v:pub,l:'Published',c:'#a8d4b0'},{e:'📅',v:posts.filter(p=>p.status==='Scheduled').length,l:'Scheduled',c:'#f0b87a'},{e:'✍️',v:posts.filter(p=>['Idea','Scripting'].includes(p.status)).length,l:'Pipeline',c:'#c4614a'},{e:'📦',v:prods.filter(p=>p.status==='Live').length,l:'Live Products',c:'#f0b87a'}].map(s=>`
         <div class="sc" style="border-color:${s.c}28">
@@ -617,7 +622,7 @@ function renderBrandIdentity(){
         <div class="card-title">Mission & Vision</div>
         <div class="fr">
           <div class="fg"><label>Mission</label><textarea class="inp" id="bi-mission">${esc(acc.mission||'')}</textarea></div>
-          <div class="fg"><label>Vision</label><textarea class="inp" id="bi-vision" value="${esc(extra.vision||'')}">${esc(extra.vision||'')}</textarea></div>
+          <div class="fg"><label>Vision</label><textarea class="inp" id="bi-vision">${esc(extra.vision||'')}</textarea></div>
         </div>
       </div>
       <div class="card">
@@ -716,7 +721,7 @@ function removePillar(idx){const acc=getAcc();const cur=_collectPillars();cur.sp
 function renderGoals(){
   const goals=loadA('goals',DEF_GOALS);
   return`
-    <div class="ph"><h2>Goals & Metrics</h2><p>Platform milestones — track 1 month to 3 years out. Auto-saved.</p></div>
+    <div class="ph"><h2>Goals & Metrics</h2><p>Platform milestones — auto-saved.</p></div>
     <button class="btn btn-primary" style="margin-bottom:14px" onclick="openGoalModal()">+ Add Goal</button>
     <div class="ga">
       ${goals.map(g=>`
@@ -933,12 +938,12 @@ function renderScripts(){
           <div style="display:flex;justify-content:space-between;margin-bottom:6px">
             <span class="tag" style="background:var(--a1)20;color:var(--a1)">${esc(s.pillar||'Untagged')}</span>
             <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">
-            <input type="checkbox" class="task-check" ${s.done?'checked':''} onclick="event.stopPropagation()" onchange="toggleScriptDone('${s.id}',this.checked)" title="Mark complete"/>
-            <span style="font-size:9px;color:var(--mu)">${s.done?'✓ Done':'Mark done'}</span>
+              <input type="checkbox" class="task-check" ${s.done?'checked':''} onclick="event.stopPropagation()" onchange="toggleScriptDone('${s.id}',this.checked)" title="Mark complete"/>
+              <span style="font-size:9px;color:var(--mu)">${s.done?'✓ Done':'Mark done'}</span>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openScriptModal('${s.id}')">Edit</button>
           </div>
-          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openScriptModal('${s.id}')">Edit</button>
-          </div>
-          ${load(accKey('script_img_'+s.id),'')?`<img src="${load(accKey('script_img_'+s.id),'')}}" style="width:100%;height:80px;object-fit:cover;border-radius:6px;margin-bottom:6px;border:1px solid var(--bor)"/>`:''}          <div style="font-weight:700;font-size:13px;margin-bottom:3px">${esc(s.title)}</div>
+          <div style="font-weight:700;font-size:13px;margin-bottom:3px">${esc(s.title)}</div>
           <div style="font-size:10px;color:var(--mu);font-style:italic">"${esc(s.hook)}"</div>
           ${s.tags?`<div style="margin-top:6px;display:flex;gap:3px;flex-wrap:wrap">${s.tags.split(',').map(t=>`<span class="tag" style="background:var(--a3)20;color:var(--a3);font-size:9px">${esc(t.trim())}</span>`).join('')}</div>`:''}
         </div>
@@ -1032,7 +1037,7 @@ function renderAnalytics(){
   const totLikes=data.reduce((s,d)=>s+(Number(d.likes)||0),0);
   const totViews=data.reduce((s,d)=>s+(Number(d.views)||0),0);
   return`
-    <div class="ph"><h2>Content Analytics</h2><p>Track likes & views per post, per platform — auto-saved.</p></div>
+    <div class="ph"><h2>Content Analytics</h2><p>Track likes & views per post — auto-saved.</p></div>
     <div class="g3" style="margin-bottom:14px">
       <div class="sc" style="border-color:var(--a1)28"><div style="font-size:16px;margin-bottom:4px">❤️</div><div class="stat-val" style="color:var(--a1)">${fmt(totLikes)}</div><div class="stat-lbl">Total Likes</div></div>
       <div class="sc" style="border-color:var(--a3)28"><div style="font-size:16px;margin-bottom:4px">👁️</div><div class="stat-val" style="color:var(--a3)">${fmt(totViews)}</div><div class="stat-lbl">Total Views</div></div>
@@ -1125,10 +1130,6 @@ function renderProducts(){
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:9px">
             ${[['Price',fd(p.price)],['Sales',fmt(p.sales)],['Revenue',fd(p.revenue)]].map(([l,v])=>`<div style="text-align:center;background:var(--sur);border-radius:5px;padding:5px"><div style="font-size:13px;font-weight:700;color:var(--a3);font-family:'Cormorant Garamond',serif">${v}</div><div style="font-size:8px;color:var(--mu)">${l}</div></div>`).join('')}
           </div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-            <input type="checkbox" class="task-check" ${p.done?'checked':''} onchange="toggleProdDone('${p.id}',this.checked)" title="Mark complete"/>
-            <span style="font-size:10px;color:var(--mu)">${p.done?'Completed':'Mark complete'}</span>
-          </div>
           <div style="display:flex;gap:5px">
             <button class="btn btn-ghost btn-sm" onclick="openProdModal('${p.id}')">Edit</button>
             <button class="btn btn-danger btn-sm" onclick="deleteProd('${p.id}')">Delete</button>
@@ -1150,10 +1151,9 @@ function renderAffiliates(){
     <button class="btn btn-primary" style="margin-bottom:14px" onclick="openAffModal()">+ Add Affiliate</button>
     <div class="ga">
       ${items.map(a=>`
-        <div class="card" style="margin-bottom:0;${a.done?'opacity:.7':''}">
+        <div class="card" style="margin-bottom:0">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-            <input type="checkbox" class="task-check" ${a.done?'checked':''} onchange="toggleAffDone('${a.id}',this.checked)" title="Mark complete"/>
-            <div style="font-weight:600;font-size:12px;flex:1;${a.done?'text-decoration:line-through;color:var(--mu)':''}">${esc(a.name)}</div>
+            <div style="font-weight:600;font-size:12px;flex:1">${esc(a.name)}</div>
             <span class="badge" style="background:${a.status==='Active'?'var(--a3)20':'var(--bor)'};color:${a.status==='Active'?'var(--a3)':'var(--mu)'}">${a.status}</span>
           </div>
           <div style="font-size:10px;color:var(--mu);margin-bottom:9px">${esc(a.niche)} · ${esc(a.comm)}</div>
@@ -1165,7 +1165,6 @@ function renderAffiliates(){
     </div>
   `;
 }
-function toggleAffDone(id,done){const items=loadA('affiliates',DEF_AFF);saveA('affiliates',items.map(a=>a.id==id?{...a,done}:a));renderPage();}
 function openAffModal(id){const items=loadA('affiliates',DEF_AFF);const a=id?items.find(x=>x.id==id):{name:'',niche:'',comm:'',status:'Pending',clicks:0,conv:0,rev:0,notes:''};openModal('Affiliate Program',`${[['name','Program Name'],['niche','Niche'],['comm','Commission Rate']].map(([k,l])=>`<div class="fg"><label>${l}</label><input class="inp" id="af-${k}" value="${esc(a[k]||'')}"/></div>`).join('')}<div class="fr"><div class="fg"><label>Status</label><select class="inp" id="af-status">${['Active','Pending','Paused','Rejected'].map(s=>`<option${a.status===s?' selected':''}>${s}</option>`).join('')}</select></div><div class="fg"><label>Revenue ($)</label><input class="inp" type="number" id="af-rev" value="${a.rev}"/></div></div><div class="fg"><label>Notes</label><textarea class="inp" id="af-notes" style="min-height:45px">${esc(a.notes)}</textarea></div><div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="saveAff('${id||''}')">Save</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function saveAff(id){const items=loadA('affiliates',DEF_AFF);const g=k=>document.getElementById('af-'+k)?.value||'';const a={id:id||uid(),name:g('name'),niche:g('niche'),comm:g('comm'),status:g('status'),rev:Number(g('rev')),clicks:0,conv:0,notes:g('notes')};if(id)saveA('affiliates',items.map(x=>x.id==id?a:x));else{items.push(a);saveA('affiliates',items);}closeModal();renderPage();}
 
@@ -1176,11 +1175,10 @@ function renderDeals(){
     <div class="ph"><h2>Brand Deals</h2><p>Sponsorships and partnerships — auto-saved.</p></div>
     <button class="btn btn-primary" style="margin-bottom:14px" onclick="openDealModal()">+ Add Deal</button>
     <div class="card" style="padding:0"><div class="tw"><table>
-      <thead><tr><th>✓</th><th>Brand</th><th>Type</th><th>Value</th><th>Status</th><th>Deadline</th><th>Deliverables</th><th></th></tr></thead>
+      <thead><tr><th>Brand</th><th>Type</th><th>Value</th><th>Status</th><th>Deadline</th><th>Deliverables</th><th></th></tr></thead>
       <tbody>
         ${deals.map(d=>`<tr>
-          <td><input type="checkbox" class="task-check" ${d.done?'checked':''} onchange="toggleDealDone('${d.id}',this.checked)"/></td>
-          <td style="font-weight:600;font-size:11px;${d.done?'text-decoration:line-through;opacity:.6':''}">${esc(d.brand)}</td>
+          <td style="font-weight:600;font-size:11px">${esc(d.brand)}</td>
           <td style="font-size:10px">${esc(d.type)}</td>
           <td style="font-weight:700;color:var(--a3);font-size:11px">${fd(d.value)}</td>
           <td><span class="badge" style="background:${d.status==='Active'?'var(--a3)20':'var(--a4)20'};color:${d.status==='Active'?'var(--a3)':'var(--a4)'}">${d.status}</span></td>
@@ -1219,7 +1217,7 @@ function renderFinance(){
           <div><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Amount ($)</label><input class="inp" type="number" id="fin-inc-amt" style="padding:4px 7px;font-size:11px"/></div>
           <button class="btn btn-primary btn-sm" onclick="addFinanceEntry('income')">+ Add</button>
         </div>
-        ${fin.income.map((e,i)=>`<div class="fin-row"><input type="checkbox" class="task-check" ${e.done?'checked':''} onchange="toggleFinEntry('income',${i},this.checked)" style="margin-right:6px"/><span style="font-size:11px;flex:1;${e.done?'text-decoration:line-through;color:var(--mu)':''}">${e.cat} · <span style="color:var(--mu);font-size:10px">${e.date||'—'}</span></span><span class="fin-amount" style="color:var(--a3)">${fd(e.amount)}</span><button onclick="removeFinEntry('income',${i})" style="background:none;border:none;color:var(--dn);cursor:pointer;font-size:12px;margin-left:6px">✕</button></div>`).join('')}
+        ${fin.income.map((e,i)=>`<div class="fin-row"><span style="font-size:11px;flex:1">${e.cat} · <span style="color:var(--mu);font-size:10px">${e.date||'—'}</span></span><span class="fin-amount" style="color:var(--a3)">${fd(e.amount)}</span><button onclick="removeFinEntry('income',${i})" style="background:none;border:none;color:var(--dn);cursor:pointer;font-size:12px;margin-left:6px">✕</button></div>`).join('')}
         ${fin.income.length===0?`<div style="text-align:center;color:var(--mu);font-size:11px;padding:12px">No income yet</div>`:''}
       </div>
       <div class="card">
@@ -1230,7 +1228,7 @@ function renderFinance(){
           <div><label style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:2px">Amount ($)</label><input class="inp" type="number" id="fin-exp-amt" style="padding:4px 7px;font-size:11px"/></div>
           <button class="btn btn-danger btn-sm" onclick="addFinanceEntry('expenses')">+ Add</button>
         </div>
-        ${fin.expenses.map((e,i)=>`<div class="fin-row"><input type="checkbox" class="task-check" ${e.done?'checked':''} onchange="toggleFinEntry('expenses',${i},this.checked)" style="margin-right:6px"/><span style="font-size:11px;flex:1;${e.done?'text-decoration:line-through;color:var(--mu)':''}">${e.cat} · <span style="color:var(--mu);font-size:10px">${e.date||'—'}</span></span><span class="fin-amount" style="color:var(--dn)">${fd(e.amount)}</span><button onclick="removeFinEntry('expenses',${i})" style="background:none;border:none;color:var(--dn);cursor:pointer;font-size:12px;margin-left:6px">✕</button></div>`).join('')}
+        ${fin.expenses.map((e,i)=>`<div class="fin-row"><span style="font-size:11px;flex:1">${e.cat} · <span style="color:var(--mu);font-size:10px">${e.date||'—'}</span></span><span class="fin-amount" style="color:var(--dn)">${fd(e.amount)}</span><button onclick="removeFinEntry('expenses',${i})" style="background:none;border:none;color:var(--dn);cursor:pointer;font-size:12px;margin-left:6px">✕</button></div>`).join('')}
         ${fin.expenses.length===0?`<div style="text-align:center;color:var(--mu);font-size:11px;padding:12px">No expenses yet</div>`:''}
       </div>
     </div>
@@ -1244,6 +1242,7 @@ function addFinanceEntry(type){
   const entry={id:uid(),date:document.getElementById(`fin-${prefix}-date`)?.value||'',cat:document.getElementById(`fin-${prefix}-cat`)?.value||'',amount:amt};
   fin[type].push(entry);saveA('finance',fin);renderPage();
 }
+function removeFinEntry(type,idx){const fin=loadA('finance',DEF_FINANCE);fin[type].splice(idx,1);saveA('finance',fin);renderPage();}
 
 // ─── COLLAB TRACKER ──────────────────────────────────────────────────────────
 function renderCollab(){
@@ -1256,7 +1255,7 @@ function renderCollab(){
       <tbody>
         ${collabs.filter(c=>c.username).map(c=>`<tr>
           <td><input type="checkbox" class="task-check" ${c.done?'checked':''} onchange="updateCollab('${c.id}','done',this.checked)"/></td>
-          <td style="font-weight:600;font-size:11px;${c.done?'text-decoration:line-through;opacity:.6':''}">${esc(c.username)}</td>
+          <td style="font-weight:600;font-size:11px">${esc(c.username)}</td>
           <td style="font-size:10px">${esc(c.platform1)}</td>
           <td style="font-size:10px">${esc(c.platform2)}</td>
           <td style="text-align:center"><input type="checkbox" class="task-check" ${c.sent1?'checked':''} onchange="updateCollab('${c.id}','sent1',this.checked)"/></td>
@@ -1290,7 +1289,7 @@ function saveCollab(){
 function updateCollab(id,field,val){const collabs=loadA('collabs',DEF_COLLABS);saveA('collabs',collabs.map(c=>c.id==id?{...c,[field]:val}:c));}
 function deleteCollab(id){const collabs=loadA('collabs',DEF_COLLABS);saveA('collabs',collabs.filter(x=>x.id!=id));renderPage();}
 
-// ─── AI AGENT (Claude) ───────────────────────────────────────────────────────
+// ─── AI AGENT ────────────────────────────────────────────────────────────────
 function getClaudeKey(){return load('cos_claude_key','');}
 function saveClaudeKey(k){save('cos_claude_key',k.trim());}
 function getClaudeSys(){
@@ -1315,9 +1314,7 @@ function renderAgent(){
           if(!k||!k.startsWith('sk-ant-')){alert('Please enter a valid Claude API key (starts with sk-ant-)');return;}
           saveClaudeKey(k);renderPage();
         ">✦ Save & Connect</button>
-        <div style="margin-top:16px;font-size:10px;color:var(--mu)">
-          Steps: console.anthropic.com → API Keys → Create Key → Copy → Paste above
-        </div>
+        <div style="margin-top:16px;font-size:10px;color:var(--mu)">Steps: console.anthropic.com → API Keys → Create Key → Copy → Paste above</div>
       </div>
     `;
   }
@@ -1327,7 +1324,7 @@ function renderAgent(){
       <div style="font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.08em">Quick Actions</div>
       <button class="btn btn-ghost btn-sm" onclick="if(confirm('Remove API key?')){saveClaudeKey('');renderPage();}">🔑 Change Key</button>
     </div>
-    <div style="margin-bottom:12px" id="quick-btns">${DEFAULT_QUICK.map(q=>`<button class="qb" data-q="${esc(q)}" onclick="sendChat(this.getAttribute('data-q'))">${esc(q)}</button>`).join('')}</div>
+    <div style="margin-bottom:12px">${DEFAULT_QUICK.map(q=>`<button class="qb" data-q="${esc(q)}" onclick="sendChat(this.getAttribute('data-q'))">${esc(q)}</button>`).join('')}</div>
     <div class="chat-wrap">
       <div class="chat-msgs" id="chat-msgs">
         ${chat.map(m=>`<div class="chat-msg ${m.role}">${m.role==='ai'?'<div class="ai-label">✦ Claude AI</div>':''}${esc(m.content)}</div>`).join('')}
@@ -1372,7 +1369,6 @@ async function sendChat(text){
   }catch(e){
     const loading=document.getElementById('loading-msg');
     if(loading)loading.outerHTML=`<div class="chat-msg ai"><div class="ai-label">✦ Claude AI</div>⚠️ ${esc(e.message||'Network error — check your API key and try again.')}.</div>`;
-    console.error('Claude error:',e);
   }
   if(btn)btn.disabled=false;
   const msgsEl=document.getElementById('chat-msgs');if(msgsEl)msgsEl.scrollTop=msgsEl.scrollHeight;
@@ -1401,7 +1397,7 @@ function renderNotes(){
                   <button style="background:none;border:none;font-size:10px;color:var(--dn);cursor:pointer" onclick="event.stopPropagation();deleteNote('${n.id}')">✕</button>
                 </div>
               </div>
-              <div style="font-size:10px;color:var(--mu);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical">${esc(n.content).replace(/☑/g,'<span style="color:var(--a3)">☑</span>').replace(/☐/g,'<span style="color:var(--mu)">☐</span>')}</div>
+              <div style="font-size:10px;color:var(--mu);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical">${esc(n.content)}</div>
               <div style="font-size:9px;color:var(--mu);margin-top:4px">${n.date}</div>
             </div>
           `).join('')}
@@ -1414,12 +1410,11 @@ function renderNotes(){
             <input type="color" value="${act.color}" onchange="updateNote('color',this.value)" style="width:26px;height:26px;border:none;border-radius:5px;cursor:pointer;padding:2px;background:none"/>
           </div>
           <div style="display:flex;gap:5px;margin-bottom:7px;flex-wrap:wrap">
-            <button class="btn btn-ghost btn-sm" onclick="noteInsertChecklist()" title="Add checklist item">☑️ Add Checklist</button>
-            <button class="btn btn-ghost btn-sm" onclick="noteCheckAll()" title="Check all items">✅ Check All</button>
-            <button class="btn btn-ghost btn-sm" onclick="noteUncheckAll()" title="Uncheck all">🔲 Uncheck All</button>
+            <button class="btn btn-ghost btn-sm" onclick="noteInsertChecklist()">☑️ Add Checklist</button>
+            <button class="btn btn-ghost btn-sm" onclick="noteCheckAll()">✅ Check All</button>
+            <button class="btn btn-ghost btn-sm" onclick="noteUncheckAll()">🔲 Uncheck All</button>
           </div>
-          <textarea class="inp" id="note-content-inp" style="flex:1;min-height:300px;border-color:${act.color}38;resize:vertical" onblur="updateNote('content',this.value)" onkeydown="if(event.key===' '&&document.getElementById('note-content-inp')){const ta=document.getElementById('note-content-inp');const line=ta.value.substring(0,ta.selectionStart).split('\n').pop();if(line.startsWith('☐')){event.preventDefault();const pos=ta.selectionStart;const lineStart=ta.value.lastIndexOf('\n',pos-1)+1;ta.value=ta.value.slice(0,lineStart)+'☑'+ta.value.slice(lineStart+1);updateNote('content',ta.value);}}" placeholder="Brain dump everything here...\n\nTip: Tap ☑️ Add Checklist to create checkboxes!\n\n☐ Item 1\n☐ Item 2">${esc(act.content)}</textarea>
-          <div id="note-checklist-preview" style="margin-top:8px"></div>
+          <textarea class="inp" id="note-content-inp" style="flex:1;min-height:300px;border-color:${act.color}38;resize:vertical" onblur="updateNote('content',this.value)" placeholder="Brain dump everything here...">${esc(act.content)}</textarea>
           ${imgUploadBtn('note_'+act.id,'Note Image')}
           <div style="display:flex;gap:7px;margin-top:10px">
             <button class="btn btn-primary btn-sm" onclick="updateNote('content',document.getElementById('note-content-inp').value);updateNote('title',document.getElementById('note-title-inp').value)">💾 Save</button>
@@ -1442,48 +1437,37 @@ function pinNote(id){const notes=loadA('notes',DEF_NOTES);saveA('notes',notes.ma
 function deleteNote(id){const notes=loadA('notes',DEF_NOTES);saveA('notes',notes.filter(n=>n.id!=id));if(STATE.activeNote==id)STATE.activeNote=null;renderPage();}
 function filterNotes(q){document.querySelectorAll('.nc').forEach(c=>{c.style.display=c.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';});}
 function toggleScriptDone(id,done){const scripts=loadA('scripts',DEF_SCRIPTS);saveA('scripts',scripts.map(s=>s.id==id?{...s,done}:s));}
-function toggleFinEntry(type,idx,done){const fin=loadA('finance',DEF_FINANCE);fin[type][idx].done=done;saveA('finance',fin);renderPage();}
-function removeFinEntry(type,idx){const fin=loadA('finance',DEF_FINANCE);fin[type].splice(idx,1);saveA('finance',fin);renderPage();}
-function noteInsertChecklist(){const ta=document.getElementById('note-content-inp');if(!ta)return;const pos=ta.selectionStart;const val=ta.value;const ins='\n☐ New item';ta.value=val.slice(0,pos)+ins+val.slice(pos);ta.selectionStart=ta.selectionEnd=pos+ins.length;ta.focus();}
-function noteCheckAll(){const ta=document.getElementById('note-content-inp');if(!ta)return;ta.value=ta.value.replace(/☐/g,'☑');updateNote('content',ta.value);}
-function noteUncheckAll(){const ta=document.getElementById('note-content-inp');if(!ta)return;ta.value=ta.value.replace(/☑/g,'☐');updateNote('content',ta.value);}
 function noteInsertChecklist(){const ta=document.getElementById('note-content-inp');if(!ta)return;const pos=ta.selectionStart;const val=ta.value;ta.value=val.slice(0,pos)+(pos>0&&val[pos-1]!=='\n'?'\n':'')+'☐ '+val.slice(pos);ta.selectionStart=ta.selectionEnd=pos+(pos>0&&val[pos-1]!=='\n'?1:0)+3;ta.focus();}
 function noteCheckAll(){const ta=document.getElementById('note-content-inp');if(!ta)return;ta.value=ta.value.replace(/☐/g,'☑');updateNote('content',ta.value);}
 function noteUncheckAll(){const ta=document.getElementById('note-content-inp');if(!ta)return;ta.value=ta.value.replace(/☑/g,'☐');updateNote('content',ta.value);}
-function toggleProdDone(id,done){const prods=loadA('prods',DEF_PRODS);saveA('prods',prods.map(p=>p.id==id?{...p,done}:p));renderPage();}
-function toggleDealDone(id,done){const deals=loadA('deals',DEF_DEALS);saveA('deals',deals.map(d=>d.id==id?{...d,done}:d));renderPage();}
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
 async function initApp(){
-  // Pull cloud data into localStorage before loading anything
+  const loadMsg=document.getElementById('loading-msg');
+  if(loadMsg)loadMsg.textContent=_fbReady()?'☁️ Syncing your data...':'⚡ Loading...';
+
   await _pullFromCloud();
 
-  // Reload accounts from (now-synced) storage
-  ACCOUNTS = load('cos_accounts', ACCOUNT_DEFAULTS);
-  ACTIVE_ACC = load('cos_active_acc', 0);
+  ACCOUNTS=load('cos_accounts',ACCOUNT_DEFAULTS);
+  ACTIVE_ACC=load('cos_active_acc',0);
 
   const acc=getAcc();
   document.getElementById('acc-emoji').textContent=acc.emoji;
   document.getElementById('acc-name').textContent=acc.name;
-  // update logo sub
   const logoSub=document.getElementById('logo-sub');
   if(logoSub)logoSub.textContent=acc.name+' · Creator OS';
-  // rebuild dropdown with saved accounts
   rebuildDropdown();
-
   renderNav();
   renderPage();
 
-  // Remove loading overlay
   const overlay=document.getElementById('loading-overlay');
   if(overlay){overlay.style.opacity='0';setTimeout(()=>overlay.remove(),400);}
   _setSyncStatus('synced');
 }
 initApp();
 
-
 // ─── POMODORO ─────────────────────────────────────────────────────────────────
-var POMO = {w:25,sb:5,lb:15,rd:4,phase:'work',round:1,run:false,tmr:null,sec:1500,tot:1500};
+var POMO={w:25,sb:5,lb:15,rd:4,phase:'work',round:1,run:false,tmr:null,sec:1500,tot:1500};
 function pomoUpdate(){POMO.w=Number(document.getElementById('pw')||{value:25}).value||25;POMO.sb=Number((document.getElementById('psb')||{value:5}).value)||5;POMO.lb=Number((document.getElementById('plb')||{value:15}).value)||15;POMO.rd=Number((document.getElementById('prd')||{value:4}).value)||4;if(!POMO.run)pomoReset();}
 function pomoToggle(){if(POMO.run){clearInterval(POMO.tmr);POMO.run=false;var b=document.getElementById('pomo-play');if(b)b.textContent='▶ Start';}else{POMO.run=true;var b=document.getElementById('pomo-play');if(b)b.textContent='⏸ Pause';POMO.tmr=setInterval(pomoTick,1000);}}
 function pomoTick(){POMO.sec--;if(POMO.sec<=0){pomoAlert();pomoNext();}pomoDisplay();}
@@ -1495,7 +1479,7 @@ function pomoDisplay(){var m=Math.floor(POMO.sec/60),s=POMO.sec%60;var te=docume
 pomoDisplay();
 if(Notification&&Notification.permission==='default')Notification.requestPermission();
 
-// ─── IMAGE UPLOAD HELPER ──────────────────────────────────────────────────────
+// ─── IMAGE UPLOAD ─────────────────────────────────────────────────────────────
 function imgUploadBtn(storageKey,label){
   const existing=load(accKey(storageKey),'');
   return`<div style="margin-top:8px">
@@ -1514,20 +1498,7 @@ function handleImgUpload(e,key){
   reader.onload=ev=>{save(accKey(key),ev.target.result);renderPage();};
   reader.readAsDataURL(file);
 }
-function handlePdfUpload(e,key){
-  const file=e.target.files[0];if(!file)return;
-  if(file.size>10*1024*1024){alert('PDF too large! Please use a PDF under 10MB.');return;}
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    save(accKey(key),ev.target.result);
-    save(accKey(key+'_name'),file.name);
-    renderPage();
-  };
-  reader.readAsDataURL(file);
-}
 function removeImg(key){save(accKey(key),'');renderPage();}
-function removePdf(key){save(accKey(key),'');save(accKey(key+'_name'),'');renderPage();}
-
 </script>
 </body>
 </html>
